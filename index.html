@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visual Architect | Professional Designer Portfolio</title>
+    <meta name="description" content="Portfolio profissional de Visual Architect. Especialista em UI/UX, Motion Design e desenvolvimento Web de alta performance com WebGL.">
+    <meta name="keywords" content="Design, UI, UX, WebGL, Motion Design, Portfólio, Frontend, Performance">
+    <meta name="author" content="Visual Architect">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://seusite.com/">
+    <meta property="og:title" content="Visual Architect | Professional Designer Portfolio">
+    <meta property="og:description" content="Fusão de alta performance com estética de vanguarda. Construindo experiências digitais imersivas.">
+    <meta property="og:image" content="assets/favicon.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://seusite.com/">
+    <meta property="twitter:title" content="Visual Architect | Professional Designer Portfolio">
+    <meta property="twitter:description" content="Fusão de alta performance com estética de vanguarda. Construindo experiências digitais imersivas.">
+    <meta property="twitter:image" content="assets/favicon.png">
+    
+    <!-- Favicon (Opcional) -->
+    <link rel="icon" type="image/png" href="assets/favicon.png">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono&display=swap" rel="stylesheet">
+    
+    <!-- CSS Libraries -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Custom Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        base: '#050506',
+                        surface: '#101012',
+                        primary: '#ff4500',
+                        secondary: '#0ea5e9',
+                        accent: '#00ffff',
+                        'text-main': '#f3f3f3',
+                        'text-muted': '#8e8e99',
+                        border: 'rgba(255, 255, 255, 0.08)',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Space Grotesk', 'sans-serif'],
+                        mono: ['Space Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- External Libraries (CDN) -->
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollToPlugin.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+
+<body class="antialiased selection:bg-accent/30 selection:text-white">
+
+    <div class="crt-scanlines"></div>
+    <div class="ambient-grid"></div>
+    
+    <!-- Side Navigation -->
+    <div class="side-nav hidden md:flex">
+        <a href="#hero" class="side-nav-dot active" data-section="hero">
+            <span class="side-nav-label">INITIALIZATION</span>
+        </a>
+        <a href="#projetos" class="side-nav-dot" data-section="projetos">
+            <span class="side-nav-label">PROJECT_ARCHIVE</span>
+        </a>
+        <a href="#sobre" class="side-nav-dot" data-section="sobre">
+            <span class="side-nav-label">PHILOSOPHY</span>
+        </a>
+        <a href="#servicos" class="side-nav-dot" data-section="servicos">
+            <span class="side-nav-label">MODULES</span>
+        </a>
+        <a href="#contato" class="side-nav-dot" data-section="contato">
+            <span class="side-nav-label">CONVERSION</span>
+        </a>
+    </div>
+
+    <!-- Background Orbs -->
+    <div class="glow-orb bg-primary -top-20 -left-20"></div>
+    <div class="glow-orb bg-secondary -bottom-20 -right-20"></div>
+
+    <!-- Top Navigation -->
+    <nav class="fixed top-0 w-full z-50 border-b border-white/5 bg-base/80 backdrop-blur-2xl">
+        <div class="max-w-[1400px] mx-auto px-8 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-2 h-2 bg-accent animate-pulse shadow-[0_0_10px_#00ffff]"></div>
+                <span class="font-display font-bold text-lg tracking-tighter uppercase">Visual<span class="text-accent">.Arch</span></span>
+            </div>
+            
+            <div class="hidden xl:flex items-center gap-8 font-mono text-[10px] uppercase tracking-[0.2em] text-text-muted">
+                <a href="#projetos" class="hover:text-accent transition-colors">Portfólio</a>
+                <a href="#sobre" class="hover:text-accent transition-colors">Processo</a>
+                
+                <!-- Search Bar -->
+                <div id="poda">
+                    <div class="s-glow"></div>
+                    <div class="darkBorderBg"></div>
+                    <div class="s-white"></div>
+                    <div class="s-border"></div>
+                    <div id="main">
+                        <div id="pink-mask"></div>
+                        <div id="search-icon">
+                            <iconify-icon icon="solar:magnifer-linear" class="text-white/50 text-xl"></iconify-icon>
+                        </div>
+                        <input placeholder="Procurar..." type="text" class="input" />
+                        <div id="input-mask"></div>
+                        <div id="filter-icon">
+                            <iconify-icon icon="solar:tuning-linear" class="text-white/80 text-lg"></iconify-icon>
+                        </div>
+                        <div class="filterBorder"></div>
+                    </div>
+                </div>
+
+                <a href="#servicos" class="hover:text-accent transition-colors">Laboratório</a>
+                <a href="#contato" class="hover:text-accent transition-colors">Contato</a>
+            </div>
+
+            <div class="flex items-center gap-6">
+                <div class="tech-status hidden sm:block">SYS_STATUS: <span class="text-green-500">OPTIMAL</span></div>
+                <a href="#contato" class="u-button !py-2.5 !px-6 !text-[10px] border-white/10 hover:border-accent">Disponível</a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <!-- Hero Section -->
+        <section id="hero" class="relative min-h-screen flex flex-col justify-center pt-20 overflow-hidden">
+            <div id="fluid-canvas-container" class="absolute inset-0 w-full h-full z-0"></div>
+            
+            <div class="absolute inset-0 z-[1] pointer-events-none opacity-20" 
+                 style="background-size: 50px 50px; background-image: linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px);">
+            </div>
+            <div class="absolute inset-0 z-[1] pointer-events-none" 
+                 style="background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.6) 100%);">
+            </div>
+
+            <div class="max-w-[1400px] mx-auto px-8 w-full z-20 grid grid-cols-1 lg:grid-cols-12 gap-12 items-end pb-20 hero-content">
+                <div class="lg:col-span-8">
+                    <div class="telemetry-label kinetic-text">// SYSTEM_INITIALIZATION_01</div>
+                    <h1 class="font-display font-bold text-6xl md:text-8xl lg:text-[120px] kinetic-text">
+                        CRAFTING THE<br/>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-white via-white/80 to-white/20">NEW DIGITAL</span><br/>
+                        <span class="text-gradient-scrub italic drop-shadow-[0_0_30px_rgba(0,255,255,0.2)]">STANDARD.</span>
+                    </h1>
+                    <p class="mt-12 text-lg md:text-xl text-text-muted max-w-2xl font-light leading-relaxed border-l-2 border-primary/40 pl-8 cyber-decode" style="transition-delay: 0.3s;">
+                        Fusão de alta performance com estética de vanguarda. Construindo experiências digitais imersivas onde cada pixel é uma decisão estratégica.
+                    </p>
+                    <div class="mt-16 flex flex-wrap gap-6 gs-reveal">
+                        <div class="magnetic-wrap">
+                            <a href="#contato" class="u-button u-button-primary group">
+                                Iniciar Projeto
+                                <iconify-icon icon="solar:alt-arrow-right-linear" class="text-lg group-hover:translate-x-1 transition-transform"></iconify-icon>
+                            </a>
+                        </div>
+                        <div class="magnetic-wrap">
+                            <a href="#projetos" class="u-button u-button-secondary">
+                                Explorar Portfólio
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-4 flex flex-col items-end gap-12 text-right">
+                    <div class="gs-reveal">
+                        <p class="font-mono text-[10px] text-text-muted uppercase tracking-[0.3em] mb-4">Core Stack</p>
+                        <div class="flex flex-col gap-2 font-display text-sm font-medium">
+                            <span>WebGL / GLSL</span>
+                            <span>React / Next.js</span>
+                            <span>UI Architecture</span>
+                        </div>
+                    </div>
+                    <div class="gs-reveal border-t border-white/5 pt-8 w-full max-w-[200px]">
+                        <div class="flex justify-between items-end mb-2">
+                            <span class="font-mono text-[9px] text-text-muted">LOC</span>
+                            <span class="font-display font-bold text-2xl tracking-tighter">BRAZIL</span>
+                        </div>
+                        <div class="flex justify-between items-end">
+                            <span class="font-mono text-[9px] text-text-muted">TIME</span>
+                            <span id="current-time" class="font-display font-bold text-2xl tracking-tighter">00:00:00</span>
+                        </div>
+                    </div>
+                    <div class="gs-reveal flex flex-col items-center gap-4 opacity-50">
+                        <div class="text-[9px] font-mono uppercase tracking-[0.4em] rotate-90 translate-y-8">Scroll</div>
+                        <div class="w-px h-24 bg-gradient-to-b from-accent to-transparent"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dynamic Background Wrapper -->
+        <div id="sections-2-3-wrapper" class="relative">
+            <div class="aurora-wrapper">
+                <div id="aurora-container" class="aurora-canvas-container"></div>
+            </div>
+
+            <!-- Projects Section -->
+            <section id="projetos" class="relative py-32 bg-transparent overflow-hidden">
+                <div class="max-w-[1400px] mx-auto px-8 w-full relative z-10">
+                    <div class="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16 gs-reveal">
+                        <div>
+                            <div class="telemetry-label kinetic-text">// PROJECT_ARCHIVE_02</div>
+                            <h2 class="font-display font-bold text-4xl md:text-6xl tracking-tighter kinetic-text">
+                                PROJETOS <span class="text-gradient-scrub">SELECIONADOS.</span>
+                            </h2>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            <button class="px-4 py-2 rounded-full border border-accent text-accent font-mono text-[10px] uppercase tracking-wider bg-accent/5 transition-colors">Todos</button>
+                            <button class="px-4 py-2 rounded-full border border-white/10 text-text-muted hover:border-white/30 hover:text-white font-mono text-[10px] uppercase tracking-wider transition-colors">UI/UX Design</button>
+                            <button class="px-4 py-2 rounded-full border border-white/10 text-text-muted hover:border-white/30 hover:text-white font-mono text-[10px] uppercase tracking-wider transition-colors">WebGL / 3D</button>
+                        </div>
+                    </div>
+
+                    <div class="u-stack-container flex overflow-x-auto snap-x snap-mandatory hide-scrollbar pb-12 -mx-8 px-8 md:mx-0 md:px-0 md:overflow-visible">
+                        <article class="project-card flex-none w-[85vw] md:w-[340px] snap-center md:snap-align-none rounded-2xl border border-white/10 overflow-hidden group gs-reveal" style="--r:-10;">
+                            <div class="relative h-64 md:h-72 overflow-hidden bg-transparent">
+                                <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=800" alt="Nexus Protocol" class="project-image w-full h-full object-cover opacity-60 mix-blend-luminosity transition-transform duration-700 group-hover:scale-105">
+                                <div class="absolute top-4 left-4 flex gap-2">
+                                    <span class="bg-base/80 backdrop-blur-md border border-white/10 text-white font-mono text-[9px] uppercase px-3 py-1 rounded-full">UI/UX</span>
+                                </div>
+                            </div>
+                            <div class="p-6 md:p-8">
+                                <h3 class="font-display font-bold text-2xl mb-3 group-hover:text-accent transition-colors">Nexus Protocol</h3>
+                                <p class="text-text-muted text-sm leading-relaxed mb-6 cyber-decode">Plataforma de visualização de dados de cibersegurança em tempo real.</p>
+                                <div class="flex items-center justify-between">
+                                    <a href="#" class="inline-flex items-center gap-2 font-mono text-[10px] text-accent uppercase tracking-widest hover:text-white transition-colors">Ler Case Study</a>
+                                    <div class="flex gap-2 text-text-muted"><iconify-icon icon="logos:react" width="16"></iconify-icon></div>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article class="project-card flex-none w-[85vw] md:w-[340px] snap-center md:snap-align-none rounded-2xl border border-white/10 overflow-hidden group gs-reveal" style="--r:5;">
+                            <div class="relative h-64 md:h-72 overflow-hidden bg-transparent">
+                                <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=800" alt="Aura Experience" class="project-image w-full h-full object-cover opacity-60 mix-blend-luminosity transition-transform duration-700 group-hover:scale-105">
+                                <div class="absolute top-4 left-4 flex gap-2">
+                                    <span class="bg-base/80 backdrop-blur-md border border-white/10 text-white font-mono text-[9px] uppercase px-3 py-1 rounded-full">WebGL</span>
+                                </div>
+                            </div>
+                            <div class="p-6 md:p-8">
+                                <h3 class="font-display font-bold text-2xl mb-3 group-hover:text-secondary transition-colors">Aura Experience</h3>
+                                <p class="text-text-muted text-sm leading-relaxed mb-6 cyber-decode">Experiência web 3D interativa premiada construída com Three.js.</p>
+                                <div class="flex items-center justify-between">
+                                    <a href="#" class="inline-flex items-center gap-2 font-mono text-[10px] text-secondary uppercase tracking-widest hover:text-white transition-colors">Ler Case Study</a>
+                                    <div class="flex gap-2 text-text-muted"><iconify-icon icon="logos:threejs" width="16"></iconify-icon></div>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article class="project-card flex-none w-[85vw] md:w-[340px] snap-center md:snap-align-none rounded-2xl border border-white/10 overflow-hidden group gs-reveal" style="--r:20;">
+                            <div class="relative h-64 md:h-72 overflow-hidden bg-transparent">
+                                <img src="https://images.unsplash.com/photo-1558655146-d09347e92766?auto=format&fit=crop&q=80&w=800" alt="Kinetix Store" class="project-image w-full h-full object-cover opacity-60 mix-blend-luminosity transition-transform duration-700 group-hover:scale-105">
+                                <div class="absolute top-4 left-4 flex gap-2">
+                                    <span class="bg-base/80 backdrop-blur-md border border-white/10 text-white font-mono text-[9px] uppercase px-3 py-1 rounded-full">E-commerce</span>
+                                </div>
+                            </div>
+                            <div class="p-6 md:p-8">
+                                <h3 class="font-display font-bold text-2xl mb-3 group-hover:text-primary transition-colors">Kinetix Store</h3>
+                                <p class="text-text-muted text-sm leading-relaxed mb-6 cyber-decode">Desenvolvimento headless Shopify com animações ultra-rápidas.</p>
+                                <div class="flex items-center justify-between">
+                                    <a href="#" class="inline-flex items-center gap-2 font-mono text-[10px] text-primary uppercase tracking-widest hover:text-white transition-colors">Ler Case Study</a>
+                                    <div class="flex gap-2 text-text-muted"><iconify-icon icon="logos:nextjs-icon" width="16"></iconify-icon></div>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+
+                    <div class="mt-12 text-center gs-reveal">
+                        <a href="#" class="u-button u-button-secondary">Ver Arquivo Completo</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Philosophy Section -->
+            <section id="sobre" class="relative py-32 bg-transparent overflow-hidden">
+                <div class="max-w-[1400px] mx-auto px-8 w-full relative z-10">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+                        <div class="lg:col-span-5 flex flex-col gap-6">
+                            <div class="telemetry-label kinetic-text">// PHILOSOPHY_ENGINE_03</div>
+                            <div class="particle-text-wrapper gs-reveal">
+                                <canvas id="text-particle-canvas"></canvas>
+                                <h2 class="sr-only">CÓDIGO QUE RESPIRA PERFORMANCE.</h2>
+                            </div>
+                            <div class="flex flex-col gap-4">
+                                <div class="galactic-card group gs-reveal motion-animate">
+                                    <div class="galactic-content">
+                                        <div class="w-12 h-12 rounded-full bg-accent/20 flex items-center justify-center text-accent">
+                                            <iconify-icon icon="solar:diploma-bold-duotone" width="24"></iconify-icon>
+                                        </div>
+                                        <div>
+                                            <p class="text-[10px] font-mono uppercase tracking-widest text-text-muted">Formação</p>
+                                            <p class="text-white font-bold text-sm">Licenciatura em Computação</p>
+                                        </div>
+                                    </div>
+                                    <div class="container-stars"><div class="stars-bg"></div></div>
+                                    <div class="glow"><div class="circle-glow"></div><div class="circle-glow"></div></div>
+                                </div>
+                                <div class="galactic-card group gs-reveal motion-animate">
+                                    <div class="galactic-content">
+                                        <div class="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center text-primary">
+                                            <iconify-icon icon="solar:cpu-bold-duotone" width="24"></iconify-icon>
+                                        </div>
+                                        <div>
+                                            <p class="text-[10px] font-mono uppercase tracking-widest text-text-muted">Expertise</p>
+                                            <p class="text-white font-bold text-sm">IA & Inovação Arquitetônica</p>
+                                        </div>
+                                    </div>
+                                    <div class="container-stars"><div class="stars-bg"></div></div>
+                                    <div class="glow"><div class="circle-glow"></div><div class="circle-glow"></div></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="lg:col-span-7 space-y-12">
+                            <div class="group kinetic-text">
+                                <div class="flex gap-6">
+                                    <div class="flex-none w-px h-20 bg-gradient-to-b from-accent to-transparent group-hover:h-32 transition-all duration-700"></div>
+                                    <div>
+                                        <h3 class="text-xl font-bold mb-4 text-white">Visão Agnóstica</h3>
+                                        <p class="text-text-muted leading-relaxed cyber-decode">Início pelo problema, não pela ferramenta. Foco no ecossistema de melhor ROI.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="group kinetic-text">
+                                <div class="flex gap-6">
+                                    <div class="flex-none w-px h-20 bg-gradient-to-b from-secondary to-transparent group-hover:h-32 transition-all duration-700"></div>
+                                    <div>
+                                        <h3 class="text-xl font-bold mb-4 text-white">Artesanato Digital</h3>
+                                        <p class="text-text-muted leading-relaxed cyber-decode">Código sob medida para controle cirúrgico de performance e exclusividade.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Services Section -->
+        <section id="servicos" class="relative py-32 bg-surface border-t border-white/5 overflow-hidden">
+            <div class="max-w-[1400px] mx-auto px-8 w-full relative z-10">
+                <div class="flex flex-col lg:flex-row gap-16">
+                    <div class="lg:w-1/3">
+                        <div class="telemetry-label kinetic-text">// MODULE_04</div>
+                        <h2 class="font-display font-bold text-5xl md:text-6xl tracking-tighter mb-8 kinetic-text">O PACOTE <span class="text-gradient-scrub">COMPLETO.</span></h2>
+                        <p class="text-text-muted leading-relaxed cyber-decode">Soluções end-to-end unindo design estratégico e engenharia de vanguarda.</p>
+                    </div>
+                    <div class="lg:w-2/3 grid grid-cols-1 md:grid-cols-2 gap-6 gs-reveal">
+                        <div class="p-8 service-neon-card group" style="--neon-color: #ff4500;">
+                            <span class="a l"></span><span class="a r"></span><span class="a t"></span><span class="a b"></span>
+                            <iconify-icon icon="solar:figma-bold-duotone" class="text-4xl text-primary mb-6 relative z-10"></iconify-icon>
+                            <h3 class="text-xl font-bold mb-4 text-white relative z-10">UI/UX Design</h3>
+                            <p class="text-sm text-text-muted relative z-10">Interfaces intuitivas e sistemas de design escaláveis.</p>
+                        </div>
+                        <div class="p-8 service-neon-card group" style="--neon-color: #00ffff;">
+                            <span class="a l"></span><span class="a r"></span><span class="a t"></span><span class="a b"></span>
+                            <iconify-icon icon="solar:code-2-bold-duotone" class="text-4xl text-accent mb-6 relative z-10"></iconify-icon>
+                            <h3 class="text-xl font-bold mb-4 text-white relative z-10">Front-end Dev</h3>
+                            <p class="text-sm text-text-muted relative z-10">Código limpo com React, Next.js e WebGL.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contato" class="relative py-32 bg-base overflow-hidden">
+            <div class="max-w-[1400px] mx-auto px-8 w-full relative z-10">
+                <div class="flex flex-col lg:flex-row gap-20">
+                    <div class="lg:w-1/2 space-y-12">
+                        <div class="telemetry-label kinetic-text">// CONVERSION_05</div>
+                        <h2 class="font-display font-bold text-6xl md:text-8xl tracking-tighter leading-none kinetic-text">VAMOS <span class="text-gradient-scrub">CRIAR?</span></h2>
+                        <p class="text-text-muted text-xl leading-relaxed cyber-decode">Pronto para elevar seu produto digital? Deixe uma mensagem.</p>
+                    </div>
+                    <div class="lg:w-1/2">
+                        <form id="contact-form-3d" class="bg-white/[0.02] border border-white/5 p-8 md:p-12 rounded-3xl backdrop-blur-xl space-y-8 kinetic-text">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <input type="text" placeholder="Seu Nome" class="input-field">
+                                <input type="email" placeholder="Seu E-mail" class="input-field">
+                            </div>
+                            <div class="select-wrapper">
+                                <select class="input-field appearance-none cursor-pointer bg-base">
+                                    <option value="ui-ux">UI/UX Design</option>
+                                    <option value="frontend">Desenvolvimento Front-end</option>
+                                    <option value="webgl">WebGL / 3D Experience</option>
+                                </select>
+                            </div>
+                            <textarea rows="4" placeholder="Sua Mensagem..." class="input-field resize-none"></textarea>
+                            <button type="submit" class="u-button u-button-primary !w-full">Enviar Proposta</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Evil Eye Footer -->
+    <footer class="relative w-full h-[600px] overflow-hidden bg-base border-t border-border" id="footer-eye-section">
+        <div id="evil-eye-footer-container" class="absolute inset-0 z-0 pointer-events-none"></div>
+        <div class="relative z-10 container mx-auto px-6 h-full flex flex-col justify-between py-20">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12">
+                <div class="space-y-6">
+                    <h3 class="text-2xl font-display font-bold text-text-main">Visual<span class="text-primary">Architect</span></h3>
+                    <p class="text-text-muted text-sm leading-relaxed">Transformando conceitos complexos em experiências imersivas.</p>
+                </div>
+                <div>
+                    <h4 class="text-sm font-mono text-accent uppercase tracking-widest mb-6">Social</h4>
+                    <div class="flex gap-4">
+                        <a href="#" class="text-2xl hover:text-primary"><iconify-icon icon="mdi:github"></iconify-icon></a>
+                        <a href="#" class="text-2xl hover:text-primary"><iconify-icon icon="mdi:linkedin"></iconify-icon></a>
+                    </div>
+                </div>
+            </div>
+            <div class="pt-10 border-t border-border flex justify-between items-center text-[10px] text-text-muted font-mono uppercase tracking-widest">
+                <p>© 2026 Visual Architect.</p>
+                <div class="flex gap-8">
+                    <a href="#">Privacidade</a>
+                    <a href="#">Termos</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script type="module" src="js/main.js"></script>
+    
+    <!-- Glitch Filter -->
+    <svg width="0" height="0" style="position: absolute;">
+        <filter id="unopaq">
+            <feColorMatrix in="SourceGraphic" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 100 -50" />
+        </filter>
+    </svg>
+</body>
+</html>
