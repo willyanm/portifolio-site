@@ -1,0 +1,2753 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Designer Portfolio | Visual Architect</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono&display=swap" rel="stylesheet">
+    
+    <!-- Libraries -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        base: '#050506',
+                        surface: '#101012',
+                        primary: '#ff4500',
+                        secondary: '#0ea5e9',
+                        accent: '#00ffff',
+                        'text-main': '#f3f3f3',
+                        'text-muted': '#8e8e99',
+                        border: 'rgba(255, 255, 255, 0.08)',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Space Grotesk', 'sans-serif'],
+                        mono: ['Space Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root {
+            --primary: #ff4500;
+            --secondary: #0ea5e9;
+            --accent: #00ffff;
+            --bg-base: #050506;
+            --bg-surface: #101012;
+            --text-main: #f3f3f3;
+            --text-muted: #8e8e99;
+            --ease-unified: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .kinetic-text, .gs-reveal, .project-card, .service-neon-card, .motion-animate, .galactic-card {
+            will-change: transform, opacity;
+            backface-visibility: hidden;
+            transform-style: preserve-3d;
+        }
+
+        .scroll-smooth {
+            scroll-behavior: smooth;
+        }
+
+        /* --- Custom Effects --- */
+
+        .crt-scanlines {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.1));
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 100;
+            opacity: 0.3;
+        }
+
+        .ambient-grid {
+            position: fixed;
+            inset: 0;
+            background-image: 
+                linear-gradient(to right, rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 50px 50px;
+            mask-image: radial-gradient(circle at center, black 30%, transparent 80%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .glow-orb {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            filter: blur(150px);
+            z-index: -1;
+            opacity: 0.1;
+            pointer-events: none;
+        }
+
+        /* --- Buttons --- */
+        .u-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            padding: 1rem 2rem;
+            border-radius: 4px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            transition: all 0.4s var(--ease-unified);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .u-button-primary {
+            background: var(--primary);
+            color: var(--bg-base);
+            border: 1px solid var(--primary);
+        }
+
+        .u-button-primary:hover {
+            background: transparent;
+            color: var(--primary);
+            box-shadow: 0 0 30px rgba(255, 69, 0, 0.4);
+        }
+
+        .u-button-secondary {
+            background: transparent;
+            color: var(--text-main);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .u-button-secondary:hover {
+            border-color: var(--secondary);
+            color: var(--secondary);
+            background: rgba(14, 165, 233, 0.05);
+            box-shadow: 0 0 25px rgba(14, 165, 233, 0.2);
+        }
+
+        /* --- Hero Specific --- */
+        .kinetic-text {
+            line-height: 0.9;
+            letter-spacing: -0.04em;
+        }
+
+        .tech-status {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 0.3em;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .scan-line {
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            animation: scan 3s infinite linear;
+        }
+
+        @keyframes scan {
+            0% { left: -100%; }
+            100% { left: 200%; }
+        }
+
+        .magnetic-wrap {
+            display: inline-block;
+        }
+
+        /* --- Search Bar (Uiverse) --- */
+        #poda {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            scale: 0.7; /* Escalonado para caber no menu */
+            transform-origin: center;
+        }
+
+        .s-glow, .darkBorderBg, .s-white, .s-border {
+            max-height: 70px;
+            max-width: 314px;
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            overflow: hidden;
+            z-index: -1;
+            border-radius: 12px;
+            filter: blur(3px);
+        }
+
+        .input {
+            background-color: #010201;
+            border: none;
+            width: 301px;
+            height: 56px;
+            border-radius: 10px;
+            color: white;
+            padding-inline: 59px;
+            font-size: 18px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .input::placeholder { color: #c0b9c0; }
+        .input:focus { outline: none; }
+
+        #main { position: relative; }
+
+        #input-mask {
+            pointer-events: none;
+            width: 100px;
+            height: 20px;
+            position: absolute;
+            background: linear-gradient(90deg, transparent, black);
+            top: 18px;
+            left: 70px;
+        }
+
+        #pink-mask {
+            pointer-events: none;
+            width: 30px;
+            height: 20px;
+            position: absolute;
+            background: #cf30aa;
+            top: 10px;
+            left: 5px;
+            filter: blur(20px);
+            opacity: 0.8;
+            transition: all 2s;
+        }
+
+        #main:hover > #pink-mask { opacity: 0; }
+
+        .s-white {
+            max-height: 63px;
+            max-width: 307px;
+            border-radius: 10px;
+            filter: blur(2px);
+        }
+
+        .s-white::before {
+            content: "";
+            z-index: -2;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(83deg);
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            filter: brightness(1.4);
+            background-image: conic-gradient(
+                rgba(0, 0, 0, 0) 0%,
+                #a099d8,
+                rgba(0, 0, 0, 0) 8%,
+                rgba(0, 0, 0, 0) 50%,
+                #dfa2da,
+                rgba(0, 0, 0, 0) 58%
+            );
+            transition: all 2s;
+        }
+
+        .s-border {
+            max-height: 59px;
+            max-width: 303px;
+            border-radius: 11px;
+            filter: blur(0.5px);
+        }
+
+        .s-border::before {
+            content: "";
+            z-index: -2;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(70deg);
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            filter: brightness(1.3);
+            background-image: conic-gradient(
+                #1c191c,
+                #402fb5 5%,
+                #1c191c 14%,
+                #1c191c 50%,
+                #cf30aa 60%,
+                #1c191c 64%
+            );
+            transition: all 2s;
+        }
+
+        .darkBorderBg {
+            max-height: 65px;
+            max-width: 312px;
+        }
+
+        .darkBorderBg::before {
+            content: "";
+            z-index: -2;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(82deg);
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background-image: conic-gradient(
+                rgba(0, 0, 0, 0),
+                #18116a,
+                rgba(0, 0, 0, 0) 10%,
+                rgba(0, 0, 0, 0) 50%,
+                #6e1b60,
+                rgba(0, 0, 0, 0) 60%
+            );
+            transition: all 2s;
+        }
+
+        #poda:hover > .darkBorderBg::before { transform: translate(-50%, -50%) rotate(-98deg); }
+        #poda:hover > .s-glow::before { transform: translate(-50%, -50%) rotate(-120deg); }
+        #poda:hover > .s-white::before { transform: translate(-50%, -50%) rotate(-97deg); }
+        #poda:hover > .s-border::before { transform: translate(-50%, -50%) rotate(-110deg); }
+
+        #poda:focus-within > .darkBorderBg::before { transform: translate(-50%, -50%) rotate(442deg); transition: all 4s; }
+        #poda:focus-within > .s-glow::before { transform: translate(-50%, -50%) rotate(420deg); transition: all 4s; }
+        #poda:focus-within > .s-white::before { transform: translate(-50%, -50%) rotate(443deg); transition: all 4s; }
+        #poda:focus-within > .s-border::before { transform: translate(-50%, -50%) rotate(430deg); transition: all 4s; }
+
+        .s-glow {
+            filter: blur(30px);
+            opacity: 0.4;
+            max-height: 130px;
+            max-width: 354px;
+        }
+
+        .s-glow:before {
+            content: "";
+            z-index: -2;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(60deg);
+            position: absolute;
+            width: 999px;
+            height: 999px;
+            background-image: conic-gradient(
+                #000,
+                #402fb5 5%,
+                #000 38%,
+                #000 50%,
+                #cf30aa 60%,
+                #000 87%
+            );
+            transition: all 2s;
+        }
+
+        #filter-icon {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+            max-height: 40px;
+            max-width: 38px;
+            height: 100%;
+            width: 100%;
+            isolation: isolate;
+            overflow: hidden;
+            border-radius: 10px;
+            background: linear-gradient(180deg, #161329, black, #1d1b4b);
+            border: 1px solid transparent;
+        }
+
+        .filterBorder {
+            height: 42px;
+            width: 40px;
+            position: absolute;
+            overflow: hidden;
+            top: 7px;
+            right: 7px;
+            border-radius: 10px;
+        }
+
+        .filterBorder::before {
+            content: "";
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(90deg);
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            filter: brightness(1.35);
+            background-image: conic-gradient(
+                rgba(0, 0, 0, 0),
+                #3d3a4f,
+                rgba(0, 0, 0, 0) 50%,
+                rgba(0, 0, 0, 0) 50%,
+                #3d3a4f,
+                rgba(0, 0, 0, 0) 100%
+            );
+            animation: rotate_search 4s linear infinite;
+        }
+
+        #search-icon {
+            position: absolute;
+            left: 20px;
+            top: 15px;
+            z-index: 2;
+        }
+
+        @keyframes rotate_search {
+            100% { transform: translate(-50%, -50%) rotate(450deg); }
+        }
+
+        /* Reveal Animation */
+        .gs-reveal { visibility: hidden; }
+
+        /* Custom Scrollbar for Carousel */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Uiverse Stack Animation for Projects (Desktop Only) */
+        @media (min-width: 768px) {
+            .u-stack-container {
+                position: relative;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-height: 500px;
+                padding: 40px 0;
+            }
+
+            .u-stack-container .project-card {
+                /* Background removido para transparência */
+                backdrop-filter: blur(10px);
+                
+                margin: 0 -100px; /* Overlap them initially */
+                transform: rotate(calc(var(--r) * 1deg));
+                transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), margin 0.6s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.6s;
+                z-index: 10;
+            }
+
+            .u-stack-container:hover .project-card {
+                transform: rotate(0deg);
+                margin: 0 15px; /* Spread out */
+            }
+
+            .u-stack-container .project-card:hover {
+                transform: translateY(-20px) scale(1.02);
+                z-index: 50;
+                box-shadow: 0 25px 40px rgba(0, 0, 0, 0.5);
+            }
+        }
+
+        /* Fallback transitions for mobile */
+        @media (max-width: 767px) {
+            .project-card {
+                backdrop-filter: blur(10px);
+            }
+        }
+
+        /* Galactic Button Style (Uiverse) */
+        .galactic-card {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: fit-content;
+            padding: 2px;
+            overflow: hidden;
+            background-size: 300% 300%;
+            cursor: pointer;
+            backdrop-filter: blur(1rem);
+            border-radius: 1.5rem;
+            transition: 0.5s;
+            animation: gradient_301 5s ease infinite;
+            border: double 4px transparent;
+            background-image: linear-gradient(#101012, #101012),
+                linear-gradient(137.48deg, #ffdb3b 10%, #fe53bb 45%, #8f51ea 67%, #0044ff 87%);
+            background-origin: border-box;
+            background-clip: content-box, border-box;
+            position: relative;
+        }
+
+        .container-stars {
+            position: absolute;
+            z-index: 1;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            transition: 0.5s;
+            backdrop-filter: blur(1rem);
+            border-radius: 1.5rem;
+            pointer-events: none;
+        }
+
+        .galactic-content {
+            z-index: 2;
+            padding: 1.25rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border-radius: 1.4rem;
+            width: 100%;
+        }
+
+        .glow {
+            position: absolute;
+            display: flex;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .circle-glow {
+            width: 100%;
+            height: 100%;
+            filter: blur(2rem);
+            animation: pulse_3011 4s infinite;
+            z-index: -1;
+            position: absolute;
+        }
+
+        .circle-glow:nth-of-type(1) { background: rgba(254, 83, 186, 0.4); }
+        .circle-glow:nth-of-type(2) { background: rgba(142, 81, 234, 0.4); }
+
+        .galactic-card:hover .container-stars {
+            z-index: 1;
+            background-color: #101012;
+        }
+
+        .galactic-card:hover { transform: scale(1.02); }
+
+        .stars-bg {
+            position: relative;
+            background: transparent;
+            width: 200rem;
+            height: 200rem;
+        }
+
+        .stars-bg::after {
+            content: "";
+            position: absolute;
+            top: -10rem;
+            left: -100rem;
+            width: 100%;
+            height: 100%;
+            animation: animStarRotate 90s linear infinite;
+            background-image: radial-gradient(#ffffff 1px, transparent 1%);
+            background-size: 50px 50px;
+        }
+
+        .stars-bg::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -50%;
+            width: 170%;
+            height: 500%;
+            animation: animStar 60s linear infinite;
+            background-image: radial-gradient(#ffffff 1px, transparent 1%);
+            background-size: 50px 50px;
+            opacity: 0.5;
+        }
+
+        @keyframes animStar { from { transform: translateY(0); } to { transform: translateY(-135rem); } }
+        @keyframes animStarRotate { from { transform: rotate(360deg); } to { transform: rotate(0); } }
+        @keyframes gradient_301 { 
+            0% { background-position: 0% 50%; } 
+            50% { background-position: 100% 50%; } 
+            100% { background-position: 0% 50%; } 
+        }
+        @keyframes pulse_3011 {
+            0% { transform: scale(0.75); }
+            70% { transform: scale(1.1); }
+            100% { transform: scale(0.75); }
+        }
+        /* Shader Background - Gemini Code Implementation */
+        /* Shader Background - Gemini Code Implementation */
+        .aurora-wrapper {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .aurora-canvas-container {
+            position: sticky;
+            top: 0;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .aurora-canvas-container canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Garante que o conteúdo das seções fique acima do fundo */
+        #sections-2-3-wrapper section {
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Particle Text Styles */
+        .particle-text-wrapper {
+            width: 100%;
+            max-width: 1000px;
+            height: 480px; /* Reduzido de 600px para aproximar os cards */
+            position: relative;
+            margin-bottom: 1rem; /* Reduzido de 2rem */
+            margin-left: -20px;
+            cursor: crosshair;
+        }
+
+        #text-particle-canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* Social Media Icons (Uiverse.io Style) */
+        .social-card {
+            width: fit-content;
+            height: fit-content;
+            background-color: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            gap: 15px;
+            border-radius: 16px;
+            margin-top: 40px;
+        }
+
+        .socialContainer {
+            width: 48px;
+            height: 48px;
+            background-color: rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            transition-duration: .3s;
+            border-radius: 12px;
+            text-decoration: none;
+        }
+
+        .containerOne:hover { background-color: #d62976; }
+        .containerTwo:hover { background-color: #00acee; }
+        .containerThree:hover { background-color: #0072b1; }
+        .containerFour:hover { background-color: #128C7E; }
+
+        .socialContainer:active {
+            transform: scale(0.9);
+            transition-duration: .3s;
+        }
+
+        .socialSvg {
+            width: 20px;
+        }
+
+        .socialSvg path {
+            fill: rgb(255, 255, 255);
+        }
+
+        .socialContainer:hover .socialSvg {
+            animation: slide-in-top 0.3s both;
+        }
+
+        @keyframes slide-in-top {
+            0% {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Neon Border Animation (SelfMadeSystem Style) */
+        .socialContainer {
+            position: relative;
+            background: #111 !important; /* Base sólida para o efeito de neon */
+            cursor: pointer;
+            border: none;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.3s;
+        }
+
+        .socialContainer::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            background: radial-gradient(circle at 50% 50%, #0000 0, #0000 20%, #111111aa 50%),
+                        radial-gradient(ellipse 100% 100%, #fff, #fff0);
+            background-size: 3px 3px, auto auto;
+            transition: 0.3s;
+            z-index: 0;
+        }
+
+        .socialContainer:hover::before {
+            opacity: 0.3;
+        }
+
+        .a {
+            pointer-events: none;
+            position: absolute;
+            --w: 2px;
+            --t: -30px; /* Ajustado para o tamanho 48px */
+            --s: calc(var(--t) * -1);
+            --e: calc(100% + var(--t));
+            --g: #fff0, #fff3 var(--s), #fffa var(--s), #fff, #fffa var(--e), #fff3 var(--e), #fff0;
+            z-index: 2;
+        }
+
+        .a::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: inherit;
+            filter: blur(4px) url(#unopaq);
+            z-index: -2;
+        }
+
+        .a::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: inherit;
+            filter: blur(10px) url(#unopaq);
+            opacity: 0;
+            z-index: -2;
+            transition: 0.3s;
+        }
+
+        .socialContainer:hover .a::after {
+            opacity: 1;
+        }
+
+        .l { left: -1px; }
+        .r { right: -1px; }
+        .l, .r {
+            background: linear-gradient(var(--g));
+            top: var(--t);
+            bottom: var(--t);
+            width: var(--w);
+        }
+
+        .t { top: -1px; }
+        .b { bottom: -1px; }
+        .t, .b {
+            background: linear-gradient(90deg, var(--g));
+            left: var(--t);
+            right: var(--t);
+            height: var(--w);
+        }
+
+        .socialSvg {
+            position: relative;
+            z-index: 3;
+            width: 20px;
+        }
+
+        /* Service Neon Cards */
+        .service-neon-card {
+            position: relative;
+            background: #0a0a0a !important;
+            border-radius: 1rem;
+            overflow: hidden;
+            transition: 0.3s;
+            --neon-color: #fff; /* Default */
+        }
+
+        .service-neon-card .a {
+            --w: 2px;
+            --t: -100px; /* Extensão maior para cards grandes */
+            --g: #fff0, var(--neon-color) var(--s), var(--neon-color) var(--s), var(--neon-color), var(--neon-color) var(--e), var(--neon-color) var(--e), #fff0;
+        }
+
+        .service-neon-card:hover .a::after {
+            opacity: 0.8;
+            filter: blur(15px) url(#unopaq);
+        }
+
+        /* Kinetic Typography & Telemetry Labels */
+        .kinetic-text {
+            opacity: 0;
+            filter: blur(10px);
+            transform: translateY(20px) scale(0.98);
+            transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), 
+                        transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), 
+                        filter 1.2s ease-out;
+        }
+
+        .kinetic-text.active {
+            opacity: 1;
+            filter: blur(0);
+            transform: translateY(0) scale(1);
+        }
+
+        .telemetry-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--accent); /* Ciano */
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 1rem;
+            opacity: 0.6;
+        }
+
+        .telemetry-label::before {
+            content: '';
+            width: 30px;
+            height: 1px;
+            background: currentColor;
+            opacity: 0.3;
+        }
+
+        .text-gradient-scrub {
+            background: linear-gradient(90deg, #fff, #fff, var(--accent), var(--primary), #fff, #fff);
+            background-size: 200% auto;
+            color: transparent;
+            -webkit-background-clip: text;
+            background-clip: text;
+            animation: scrub 8s linear infinite;
+        }
+
+        @keyframes scrub {
+            0% { background-position: 100% center; }
+            100% { background-position: -100% center; }
+        }
+
+        /* Contact Form & Footer */
+        .input-field {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            color: white;
+            width: 100%;
+            transition: all 0.3s ease;
+            outline: none;
+            font-size: 0.9rem;
+        }
+
+        .input-field:focus {
+            border-color: var(--accent);
+            background: rgba(0, 255, 255, 0.05);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
+        }
+
+        /* Estilo para as opções do Select */
+        select.input-field option {
+            background-color: #0a0a0a;
+            color: white;
+            padding: 10px;
+        }
+
+        /* Seta customizada para o select */
+        .select-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .select-wrapper::after {
+            content: '\e9b5'; /* Ícone de seta do Iconify via fonte se disponível ou apenas um triângulo */
+            content: '▼';
+            font-size: 10px;
+            color: var(--accent);
+            position: absolute;
+            right: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        .budget-option {
+            cursor: pointer;
+            padding: 0.75rem 1rem;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            font-size: 0.75rem;
+            font-family: 'JetBrains Mono', monospace;
+            transition: all 0.3s ease;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .budget-option:hover, .budget-option.active {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: rgba(0, 255, 255, 0.05);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.1);
+        }
+
+        footer a {
+            transition: all 0.3s ease;
+        }
+
+        footer a:hover {
+            color: var(--accent);
+            letter-spacing: 0.1em;
+        }
+        #contact-form-3d {
+            transform-style: preserve-3d;
+            transition: transform 0.1s ease-out;
+            will-change: transform;
+        }
+
+        /* Advanced Scroll Navigation */
+        .side-nav {
+            position: fixed;
+            right: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .side-nav-dot {
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: full;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+        }
+
+        .side-nav-dot.active {
+            background: var(--accent);
+            height: 20px;
+            box-shadow: 0 0 15px var(--accent);
+        }
+
+        .side-nav-label {
+            position: absolute;
+            right: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--accent);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .side-nav-dot:hover .side-nav-label,
+        .side-nav-dot.active .side-nav-label {
+            opacity: 1;
+            right: 2rem;
+        }
+
+        /* Section Transition Base State */
+        section {
+            will-change: transform, opacity, filter;
+        }
+
+        /* Telemetry Decode Effect */
+        .cyber-decode {
+            position: relative;
+            display: inline-block;
+            opacity: 0;
+            filter: blur(5px);
+            transform: translateX(-10px);
+            transition: opacity 0.5s ease;
+        }
+
+        .cyber-decode.decoded {
+            opacity: 1;
+            filter: blur(0);
+            transform: translateX(0);
+        }
+
+        .decode-glitch {
+            color: var(--accent);
+            text-shadow: 0 0 8px var(--accent);
+            font-family: 'Space Mono', monospace;
+        }
+    </style>
+
+
+
+</head>
+<body class="antialiased selection:bg-accent/30 selection:text-white">
+
+    <div class="crt-scanlines"></div>
+    <div class="ambient-grid"></div>
+    
+
+    <!-- Side Navigation -->
+    <div class="side-nav hidden md:flex">
+        <a href="#hero" class="side-nav-dot active" data-section="hero">
+            <span class="side-nav-label">INITIALIZATION</span>
+        </a>
+        <a href="#projetos" class="side-nav-dot" data-section="projetos">
+            <span class="side-nav-label">PROJECT_ARCHIVE</span>
+        </a>
+        <a href="#sobre" class="side-nav-dot" data-section="sobre">
+            <span class="side-nav-label">PHILOSOPHY</span>
+        </a>
+        <a href="#servicos" class="side-nav-dot" data-section="servicos">
+            <span class="side-nav-label">MODULES</span>
+        </a>
+        <a href="#contato" class="side-nav-dot" data-section="contato">
+            <span class="side-nav-label">CONVERSION</span>
+        </a>
+    </div>
+
+    <!-- Orbs -->
+    <div class="glow-orb bg-primary -top-20 -left-20"></div>
+    <div class="glow-orb bg-secondary -bottom-20 -right-20"></div>
+
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 border-b border-white/5 bg-base/80 backdrop-blur-2xl">
+        <div class="max-w-[1400px] mx-auto px-8 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-2 h-2 bg-accent animate-pulse shadow-[0_0_10px_#00ffff]"></div>
+                <span class="font-display font-bold text-lg tracking-tighter uppercase">Visual<span class="text-accent">.Arch</span></span>
+            </div>
+            
+            <div class="hidden xl:flex items-center gap-8 font-mono text-[10px] uppercase tracking-[0.2em] text-text-muted">
+                <a href="#" class="hover:text-accent transition-colors">Portfólio</a>
+                <a href="#" class="hover:text-accent transition-colors">Processo</a>
+                
+                <!-- Search Bar Container -->
+                <div id="poda">
+                    <div class="s-glow"></div>
+                    <div class="darkBorderBg"></div>
+                    <div class="s-white"></div>
+                    <div class="s-border"></div>
+                    <div id="main">
+                        <div id="pink-mask"></div>
+                        <div id="search-icon">
+                            <iconify-icon icon="solar:magnifer-linear" class="text-white/50 text-xl"></iconify-icon>
+                        </div>
+                        <input placeholder="Procurar..." type="text" class="input" />
+                        <div id="input-mask"></div>
+                        <div id="filter-icon">
+                            <iconify-icon icon="solar:tuning-linear" class="text-white/80 text-lg"></iconify-icon>
+                        </div>
+                        <div class="filterBorder"></div>
+                    </div>
+                </div>
+
+                <a href="#" class="hover:text-accent transition-colors">Laboratório</a>
+                <a href="#" class="hover:text-accent transition-colors">Contato</a>
+            </div>
+
+            <div class="flex items-center gap-6">
+                <div class="tech-status hidden sm:block">SYS_STATUS: <span class="text-green-500">OPTIMAL</span></div>
+                <a href="#" class="u-button !py-2.5 !px-6 !text-[10px] border-white/10 hover:border-accent">Disponível</a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <!-- Hero Section -->
+        <section id="hero" class="relative min-h-screen flex flex-col justify-center pt-20 overflow-hidden">
+            
+            <!-- Fluid Background Container -->
+            <div id="fluid-canvas-container" class="absolute inset-0 w-full h-full z-0"></div>
+
+
+            
+            <!-- Visual Effects Overlay -->
+            <div class="absolute inset-0 z-[1] pointer-events-none opacity-20" 
+                 style="background-size: 50px 50px; background-image: linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px);">
+            </div>
+            <div class="absolute inset-0 z-[1] pointer-events-none" 
+                 style="background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.6) 100%);">
+            </div>
+
+            <div class="max-w-[1400px] mx-auto px-8 w-full z-20 grid grid-cols-1 lg:grid-cols-12 gap-12 items-end pb-20 hero-content">
+                
+                <!-- Left Content -->
+                <div class="lg:col-span-8">
+                    <div class="telemetry-label kinetic-text">// SYSTEM_INITIALIZATION_01</div>
+
+                    <h1 class="font-display font-bold text-6xl md:text-8xl lg:text-[120px] kinetic-text">
+                        CRAFTING THE<br/>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-white via-white/80 to-white/20">NEW DIGITAL</span><br/>
+                        <span class="text-gradient-scrub italic drop-shadow-[0_0_30px_rgba(0,255,255,0.2)]">STANDARD.</span>
+                    </h1>
+
+                    <p class="mt-12 text-lg md:text-xl text-text-muted max-w-2xl font-light leading-relaxed border-l-2 border-primary/40 pl-8 cyber-decode" style="transition-delay: 0.3s;">
+                        Fusão de alta performance com estética de vanguarda. Construindo experiências digitais imersivas onde cada pixel é uma decisão estratégica.
+                    </p>
+
+
+                    <div class="mt-16 flex flex-wrap gap-6 gs-reveal">
+                        <div class="magnetic-wrap">
+                            <a href="#" class="u-button u-button-primary group">
+                                Iniciar Projeto
+                                <iconify-icon icon="solar:alt-arrow-right-linear" class="text-lg group-hover:translate-x-1 transition-transform"></iconify-icon>
+                            </a>
+                        </div>
+                        <div class="magnetic-wrap">
+                            <a href="#" class="u-button u-button-secondary">
+                                Explorar Portfólio
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Info / Stats -->
+                <div class="lg:col-span-4 flex flex-col items-end gap-12 text-right">
+                    <div class="gs-reveal">
+                        <p class="font-mono text-[10px] text-text-muted uppercase tracking-[0.3em] mb-4">Core Stack</p>
+                        <div class="flex flex-col gap-2 font-display text-sm font-medium">
+                            <span>WebGL / GLSL</span>
+                            <span>React / Next.js</span>
+                            <span>UI Architecture</span>
+                        </div>
+                    </div>
+
+                    <div class="gs-reveal border-t border-white/5 pt-8 w-full max-w-[200px]">
+                        <div class="flex justify-between items-end mb-2">
+                            <span class="font-mono text-[9px] text-text-muted">LOC</span>
+                            <span class="font-display font-bold text-2xl tracking-tighter">BRAZIL</span>
+                        </div>
+                        <div class="flex justify-between items-end">
+                            <span class="font-mono text-[9px] text-text-muted">TIME</span>
+                            <span id="current-time" class="font-display font-bold text-2xl tracking-tighter">00:00:00</span>
+                        </div>
+                    </div>
+
+                    <!-- Scroll Indicator -->
+                    <div class="gs-reveal flex flex-col items-center gap-4 opacity-50">
+                        <div class="text-[9px] font-mono uppercase tracking-[0.4em] rotate-90 translate-y-8">Scroll</div>
+                        <div class="w-px h-24 bg-gradient-to-b from-accent to-transparent"></div>
+                    </div>
+                </div>
+            </div>
+
+
+        </section>
+
+        <!-- Wrapper unificado para Seções 2 e 3 -->
+        <div id="sections-2-3-wrapper" class="relative">
+            <div class="aurora-wrapper">
+                <div id="aurora-container" class="aurora-canvas-container">
+                    <!-- O canvas será injetado aqui via JS -->
+                </div>
+            </div>
+
+            <!-- Seção 02: Projetos -->
+            <section id="projetos" class="relative py-32 bg-transparent overflow-hidden">
+                <div class="max-w-[1400px] mx-auto px-8 w-full relative z-10">
+
+
+                    
+                    <!-- Section Header -->
+                    <div class="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16 gs-reveal">
+                        <div>
+                            <div class="telemetry-label kinetic-text">// PROJECT_ARCHIVE_02</div>
+                            <h2 class="font-display font-bold text-4xl md:text-6xl tracking-tighter kinetic-text">
+                                PROJETOS <span class="text-gradient-scrub">SELECIONADOS.</span>
+                            </h2>
+                        </div>
+                        
+                        <!-- Filters -->
+                        <div class="flex flex-wrap gap-2">
+                            <button class="px-4 py-2 rounded-full border border-accent text-accent font-mono text-[10px] uppercase tracking-wider bg-accent/5 transition-colors">Todos</button>
+                            <button class="px-4 py-2 rounded-full border border-white/10 text-text-muted hover:border-white/30 hover:text-white font-mono text-[10px] uppercase tracking-wider transition-colors">UI/UX Design</button>
+                            <button class="px-4 py-2 rounded-full border border-white/10 text-text-muted hover:border-white/30 hover:text-white font-mono text-[10px] uppercase tracking-wider transition-colors">WebGL / 3D</button>
+                            <button class="px-4 py-2 rounded-full border border-white/10 text-text-muted hover:border-white/30 hover:text-white font-mono text-[10px] uppercase tracking-wider transition-colors">E-commerce</button>
+                        </div>
+                    </div>
+
+                    <!-- Projects Gallery (Stack on Desktop / Peek Carousel on Mobile) -->
+                    <div class="u-stack-container flex overflow-x-auto snap-x snap-mandatory hide-scrollbar pb-12 -mx-8 px-8 md:mx-0 md:px-0 md:overflow-visible">
+                        
+                        <!-- Project Card 1 -->
+                        <article class="project-card flex-none w-[85vw] md:w-[340px] snap-center md:snap-align-none rounded-2xl border border-white/10 overflow-hidden group gs-reveal" style="--r:-10;">
+                            <div class="relative h-64 md:h-72 overflow-hidden bg-transparent">
+                                <!-- Backgrounds de imagem removidos -->
+                                <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=800" alt="Cyber Security Dashboard" class="project-image w-full h-full object-cover opacity-60 mix-blend-luminosity transition-transform duration-700 group-hover:scale-105">
+                                
+                                <!-- Overlay Tags -->
+                                <div class="absolute top-4 left-4 flex gap-2">
+                                    <span class="bg-base/80 backdrop-blur-md border border-white/10 text-white font-mono text-[9px] uppercase px-3 py-1 rounded-full">UI/UX</span>
+                                    <span class="bg-base/80 backdrop-blur-md border border-white/10 text-white font-mono text-[9px] uppercase px-3 py-1 rounded-full">Dashboard</span>
+                                </div>
+                            </div>
+                            <div class="p-6 md:p-8">
+                                <h3 class="font-display font-bold text-2xl mb-3 group-hover:text-accent transition-colors">Nexus Protocol</h3>
+                                <p class="text-text-muted text-sm leading-relaxed mb-6 cyber-decode">Plataforma de visualização de dados de cibersegurança em tempo real, focada em redução de carga cognitiva.</p>
+                                <div class="flex items-center justify-between">
+
+                                    <a href="#" class="inline-flex items-center gap-2 font-mono text-[10px] text-accent uppercase tracking-widest hover:text-white transition-colors">
+                                        Ler Case Study
+                                        <iconify-icon icon="solar:arrow-right-up-linear" class="text-base"></iconify-icon>
+                                    </a>
+                                    <div class="flex gap-2 text-text-muted">
+                                        <iconify-icon icon="logos:react" width="16"></iconify-icon>
+                                        <iconify-icon icon="logos:tailwindcss-icon" width="16"></iconify-icon>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+
+                        <!-- Project Card 2 -->
+                        <article class="project-card flex-none w-[85vw] md:w-[340px] snap-center md:snap-align-none rounded-2xl border border-white/10 overflow-hidden group gs-reveal" style="--r:5; transition-delay: 0.1s;">
+                            <div class="relative h-64 md:h-72 overflow-hidden bg-transparent">
+                                <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=800" alt="Aura WebGL Experience" class="project-image w-full h-full object-cover opacity-60 mix-blend-luminosity transition-transform duration-700 group-hover:scale-105">
+                                
+                                <div class="absolute top-4 left-4 flex gap-2">
+                                    <span class="bg-base/80 backdrop-blur-md border border-white/10 text-white font-mono text-[9px] uppercase px-3 py-1 rounded-full">WebGL</span>
+                                    <span class="bg-base/80 backdrop-blur-md border border-white/10 text-white font-mono text-[9px] uppercase px-3 py-1 rounded-full">Imersivo</span>
+                                </div>
+                            </div>
+                            <div class="p-6 md:p-8">
+                                <h3 class="font-display font-bold text-2xl mb-3 group-hover:text-secondary transition-colors">Aura Experience</h3>
+                                <p class="text-text-muted text-sm leading-relaxed mb-6 cyber-decode">Uma experiência web 3D interativa premiada, construída com Three.js e GLSL shaders para marca de luxo.</p>
+                                <div class="flex items-center justify-between">
+
+                                    <a href="#" class="inline-flex items-center gap-2 font-mono text-[10px] text-secondary uppercase tracking-widest hover:text-white transition-colors">
+                                        Ler Case Study
+                                        <iconify-icon icon="solar:arrow-right-up-linear" class="text-base"></iconify-icon>
+                                    </a>
+                                    <div class="flex gap-2 text-text-muted">
+                                        <iconify-icon icon="logos:threejs" width="16"></iconify-icon>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+
+                        <!-- Project Card 3 -->
+                        <article class="project-card flex-none w-[85vw] md:w-[340px] snap-center md:snap-align-none rounded-2xl border border-white/10 overflow-hidden group gs-reveal" style="--r:20; transition-delay: 0.2s;">
+                            <div class="relative h-64 md:h-72 overflow-hidden bg-transparent">
+                                <img src="https://images.unsplash.com/photo-1558655146-d09347e92766?auto=format&fit=crop&q=80&w=800" alt="E-commerce Architecture" class="project-image w-full h-full object-cover opacity-60 mix-blend-luminosity transition-transform duration-700 group-hover:scale-105">
+                                
+                                <div class="absolute top-4 left-4 flex gap-2">
+                                    <span class="bg-base/80 backdrop-blur-md border border-white/10 text-white font-mono text-[9px] uppercase px-3 py-1 rounded-full">E-commerce</span>
+                                </div>
+                            </div>
+                            <div class="p-6 md:p-8">
+                                <h3 class="font-display font-bold text-2xl mb-3 group-hover:text-primary transition-colors">Kinetix Store</h3>
+                                <p class="text-text-muted text-sm leading-relaxed mb-6 cyber-decode">Redesign completo e desenvolvimento headless Shopify. Aumentou as conversões em 42% com animações ultra-rápidas.</p>
+                                <div class="flex items-center justify-between">
+
+                                    <a href="#" class="inline-flex items-center gap-2 font-mono text-[10px] text-primary uppercase tracking-widest hover:text-white transition-colors">
+                                        Ler Case Study
+                                        <iconify-icon icon="solar:arrow-right-up-linear" class="text-base"></iconify-icon>
+                                    </a>
+                                    <div class="flex gap-2 text-text-muted">
+                                        <iconify-icon icon="logos:nextjs-icon" width="16"></iconify-icon>
+                                        <iconify-icon icon="logos:shopify" width="16"></iconify-icon>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+
+                    </div>
+
+                    <!-- Call to Action / View All -->
+                    <div class="mt-12 text-center gs-reveal">
+                        <a href="#" class="u-button u-button-secondary">
+                            Ver Arquivo Completo
+                            <span class="ml-2 font-mono text-[10px] bg-white/10 px-2 py-0.5 rounded text-text-muted">20+</span>
+                        </a>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- Seção 03: Sobre Mim (Filosofia) -->
+            <section id="sobre" class="relative py-32 bg-transparent overflow-hidden">
+                <div class="max-w-[1400px] mx-auto px-8 w-full relative z-10 sobre-content">
+
+
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+                        
+                        <!-- Coluna da Esquerda: Impacto Visual -->
+                        <div class="lg:col-span-5 flex flex-col gap-6">
+                            <div class="telemetry-label kinetic-text">// PHILOSOPHY_ENGINE_03</div>
+                            
+                            <!-- Particle Text Heading -->
+                            <div class="particle-text-wrapper gs-reveal">
+                                <canvas id="text-particle-canvas"></canvas>
+                                <!-- Texto oculto para SEO -->
+                                <h2 class="sr-only">CÓDIGO QUE RESPIRA PERFORMANCE.</h2>
+                            </div>
+                            
+                            <div class="flex flex-col gap-4">
+                                <!-- Galactic Card de Autoridade (Uiverse) -->
+                                <div class="galactic-card group gs-reveal motion-animate">
+                                    <div class="galactic-content">
+                                        <div class="w-12 h-12 rounded-full bg-accent/20 flex items-center justify-center text-accent">
+                                            <iconify-icon icon="solar:diploma-bold-duotone" width="24"></iconify-icon>
+                                        </div>
+                                        <div>
+                                            <p class="text-[10px] font-mono uppercase tracking-widest text-text-muted">Formação Acadêmica</p>
+                                            <p class="text-white font-bold text-sm">Licenciatura em Computação</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="container-stars">
+                                        <div class="stars-bg"></div>
+                                    </div>
+                                    
+                                    <div class="glow">
+                                        <div class="circle-glow"></div>
+                                        <div class="circle-glow"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Nova Formação: Vibe Design -->
+                                <div class="galactic-card group gs-reveal motion-animate">
+                                    <div class="galactic-content">
+                                        <div class="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center text-primary">
+                                            <iconify-icon icon="solar:magic-stick-3-bold-duotone" width="24"></iconify-icon>
+                                        </div>
+                                        <div>
+                                            <p class="text-[10px] font-mono uppercase tracking-widest text-text-muted">Especialização</p>
+                                            <p class="text-white font-bold text-sm">Vibe Design</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="container-stars">
+                                        <div class="stars-bg"></div>
+                                    </div>
+                                    
+                                    <div class="glow">
+                                        <div class="circle-glow"></div>
+                                        <div class="circle-glow"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Nova Especialização: IA -->
+                                <div class="galactic-card group gs-reveal motion-animate">
+                                    <div class="galactic-content">
+                                        <div class="w-12 h-12 rounded-full bg-secondary/20 flex items-center justify-center text-secondary">
+                                            <iconify-icon icon="solar:cpu-bold-duotone" width="24"></iconify-icon>
+                                        </div>
+                                        <div>
+                                            <p class="text-[10px] font-mono uppercase tracking-widest text-text-muted">Expertise Tecnológica</p>
+                                            <p class="text-white font-bold text-sm">IA & Inovação: Arquitetura Prática</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="container-stars">
+                                        <div class="stars-bg"></div>
+                                    </div>
+                                    
+                                    <div class="glow">
+                                        <div class="circle-glow"></div>
+                                        <div class="circle-glow"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Coluna da Direita: Conteúdo Estratégico -->
+                        <div class="lg:col-span-7 space-y-12">
+                            
+                            <!-- Bloco 01: Agnóstico -->
+                            <div class="group kinetic-text">
+                                <div class="flex gap-6">
+                                    <div class="flex-none w-px h-20 bg-gradient-to-b from-accent to-transparent group-hover:h-32 transition-all duration-700"></div>
+                                    <div>
+                                        <h3 class="text-xl font-bold mb-4 flex items-center gap-3 text-white">
+                                            <iconify-icon icon="solar:settings-minimalistic-bold-duotone" class="text-accent"></iconify-icon>
+                                            Visão Agnóstica
+                                        </h3>
+                                        <p class="text-text-muted leading-relaxed max-w-xl cyber-decode">
+                                            Não me prendo a "caixas" de frameworks ou CMSs. Minha abordagem começa pelo problema do cliente, não pela ferramenta. Analiso a escalabilidade e necessidade real para escolher o ecossistema que entregará o melhor ROI.
+                                        </p>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Bloco 02: Código Puro -->
+                            <div class="group kinetic-text" style="transition-delay: 0.1s;">
+                                <div class="flex gap-6">
+                                    <div class="flex-none w-px h-20 bg-gradient-to-b from-secondary to-transparent group-hover:h-32 transition-all duration-700"></div>
+                                    <div>
+                                        <h3 class="text-xl font-bold mb-4 flex items-center gap-3 text-white">
+                                            <iconify-icon icon="solar:code-bold-duotone" class="text-secondary"></iconify-icon>
+                                            Artesanato Digital
+                                        </h3>
+                                        <p class="text-text-muted leading-relaxed max-w-xl cyber-decode">
+                                            Acredito na elegância do código feito sob medida. Utilizar HTML, CSS e JS puros me permite um controle cirúrgico sobre a performance, entregando sites leves, exclusivos e com pontuação máxima em Core Web Vitals.
+                                        </p>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Bloco 03: Performance -->
+                            <div class="group kinetic-text" style="transition-delay: 0.2s;">
+                                <div class="flex gap-6">
+                                    <div class="flex-none w-px h-20 bg-gradient-to-b from-white/20 to-transparent group-hover:h-32 transition-all duration-700"></div>
+                                    <div>
+                                        <h3 class="text-xl font-bold mb-4 flex items-center gap-3 text-white">
+                                            <iconify-icon icon="solar:bolt-circle-bold-duotone" class="text-white"></iconify-icon>
+                                            Controle Total
+                                        </h3>
+                                        <p class="text-text-muted leading-relaxed max-w-xl cyber-decode">
+                                            Sem dependências desnecessárias ou "bloatware". Cada linha de código tem um propósito. O resultado são interfaces que não apenas parecem modernas, mas funcionam com a velocidade que o mercado exige.
+                                        </p>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Social Media Card -->
+                            <div class="gs-reveal" style="transition-delay: 0.3s;">
+                                <div class="social-card">
+                                    <a href="#" class="socialContainer containerOne">
+                                        <span class="a l"></span><span class="a r"></span><span class="a t"></span><span class="a b"></span>
+                                        <svg viewBox="0 0 448 512" class="socialSvg"><path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"></path></svg>
+                                    </a>
+                                    <a href="#" class="socialContainer containerTwo">
+                                        <span class="a l"></span><span class="a r"></span><span class="a t"></span><span class="a b"></span>
+                                        <svg viewBox="0 0 512 512" class="socialSvg"><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"></path></svg>
+                                    </a>
+                                    <a href="#" class="socialContainer containerThree">
+                                        <span class="a l"></span><span class="a r"></span><span class="a t"></span><span class="a b"></span>
+                                        <svg viewBox="0 0 448 512" class="socialSvg"><path d="M100.28 448H7.4V148.9h92.88zM53.79 108.1C24.09 108.1 0 83.5 0 53.8a53.79 53.79 0 0 1 107.58 0c0 29.7-24.1 54.3-53.79 54.3zM447.9 448h-92.68V302.4c0-34.7-.7-79.2-48.29-79.2-48.29 0-55.69 37.7-55.69 76.7V448h-92.78V148.9h89.08v40.8h1.3c12.4-23.5 42.69-48.3 87.88-48.3 94 0 111.28 61.9 111.28 142.3V448z"></path></svg>
+                                    </a>
+                                    <a href="#" class="socialContainer containerFour">
+                                        <span class="a l"></span><span class="a r"></span><span class="a t"></span><span class="a b"></span>
+                                        <svg viewBox="0 0 448 512" class="socialSvg"><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-5.5-2.8-23.2-8.5-44.2-27.1-16.4-14.6-27.4-32.7-30.6-38.2-3.2-5.6-.3-8.6 2.4-11.3 2.5-2.6 5.6-6.5 8.3-9.8 2.8-3.3 3.7-5.6 5.6-9.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 13.2 5.8 23.5 9.2 31.5 11.8 13.3 4.2 25.4 3.6 35 2.2 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"></path></svg>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Decorative Floating Elements -->
+                <div class="absolute -bottom-20 -left-20 w-64 h-64 bg-accent/10 blur-[120px] rounded-full pointer-events-none"></div>
+            </section>
+        </div>
+
+        <!-- Seção 04: Serviços (O Pacote Completo) -->
+        <section id="servicos" class="relative py-32 bg-surface border-t border-white/5 overflow-hidden">
+            <div class="max-w-[1400px] mx-auto px-8 w-full relative z-10">
+                
+                <div class="flex flex-col lg:flex-row gap-16">
+                    <!-- Esquerda: Título e Intro -->
+                    <div class="lg:w-1/3">
+                        <div class="telemetry-label kinetic-text">// INITIALIZING_MODULE_04</div>
+                        
+                        <h2 class="font-display font-bold text-5xl md:text-6xl tracking-tighter mb-8 kinetic-text">
+                            O PACOTE <br/>
+                            <span class="text-gradient-scrub">COMPLETO.</span>
+                        </h2>
+                        <p class="text-text-muted leading-relaxed cyber-decode" style="transition-delay: 0.2s;">
+                            Soluções end-to-end que unem design estratégico e engenharia de ponta para elevar seu produto digital ao próximo nível.
+                        </p>
+
+                        
+                        <div class="mt-12 space-y-6 gs-reveal">
+                            <div class="flex items-center gap-4 group">
+                                <div class="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                                    <iconify-icon icon="solar:check-read-bold" class="text-primary"></iconify-icon>
+                                </div>
+                                <span class="text-sm font-medium text-text-muted group-hover:text-white transition-colors">Foco em Conversão</span>
+                            </div>
+                            <div class="flex items-center gap-4 group">
+                                <div class="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-accent/20 transition-colors">
+                                    <iconify-icon icon="solar:check-read-bold" class="text-accent"></iconify-icon>
+                                </div>
+                                <span class="text-sm font-medium text-text-muted group-hover:text-white transition-colors">SEO & Performance</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Direita: Lista de Serviços e Processo -->
+                    <div class="lg:w-2/3 space-y-16">
+                        
+                        <!-- Cards de Serviços -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 gs-reveal">
+                            <div class="p-8 service-neon-card group" style="--neon-color: #ff00ff;">
+                                <span class="a l"></span><span class="a r"></span><span class="a t"></span><span class="a b"></span>
+                                <iconify-icon icon="solar:figma-bold-duotone" class="text-4xl text-primary mb-6 relative z-10"></iconify-icon>
+                                <h3 class="text-xl font-bold mb-4 text-white relative z-10">UI/UX Design</h3>
+                                <p class="text-sm text-text-muted leading-relaxed relative z-10">
+                                    Interfaces intuitivas, prototipagem de alta fidelidade e sistemas de design escaláveis para produtos digitais modernos.
+                                </p>
+                            </div>
+                            
+                            <div class="p-8 service-neon-card group" style="--neon-color: #00f2ff;">
+                                <span class="a l"></span><span class="a r"></span><span class="a t"></span><span class="a b"></span>
+                                <iconify-icon icon="solar:code-2-bold-duotone" class="text-4xl text-accent mb-6 relative z-10"></iconify-icon>
+                                <h3 class="text-xl font-bold mb-4 text-white relative z-10">Front-end Development</h3>
+                                <p class="text-sm text-text-muted leading-relaxed relative z-10">
+                                    Código limpo, semântico e responsivo utilizando tecnologias de ponta como React, Next.js e WebGL.
+                                </p>
+                            </div>
+                            
+                            <div class="p-8 service-neon-card group" style="--neon-color: #7000ff;">
+                                <span class="a l"></span><span class="a r"></span><span class="a t"></span><span class="a b"></span>
+                                <iconify-icon icon="solar:bolt-bold-duotone" class="text-4xl text-secondary mb-6 relative z-10"></iconify-icon>
+                                <h3 class="text-xl font-bold mb-4 text-white relative z-10">Performance Optimization</h3>
+                                <p class="text-sm text-text-muted leading-relaxed relative z-10">
+                                    Otimização agressiva de carregamento, Core Web Vitals e experiências ultra-fluidas em qualquer dispositivo.
+                                </p>
+                            </div>
+                            
+                            <div class="p-8 service-neon-card group" style="--neon-color: #ffffff;">
+                                <span class="a l"></span><span class="a r"></span><span class="a t"></span><span class="a b"></span>
+                                <iconify-icon icon="solar:globus-bold-duotone" class="text-4xl text-text-muted mb-6 relative z-10"></iconify-icon>
+                                <h3 class="text-xl font-bold mb-4 text-white relative z-10">SEO & Estratégia</h3>
+                                <p class="text-sm text-text-muted leading-relaxed relative z-10">
+                                    Estruturação técnica focada em ranqueamento orgânico e estratégias de crescimento baseadas em dados.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Nosso Processo -->
+                        <div class="pt-16 border-t border-white/5">
+                            <h4 class="font-display font-bold text-2xl mb-12 gs-reveal">NOSSO PROCESSO</h4>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                                <div class="gs-reveal" style="transition-delay: 0.1s;">
+                                    <div class="text-accent font-mono text-xs mb-4">STEP 01</div>
+                                    <h5 class="text-white font-bold mb-2">Descoberta</h5>
+                                    <p class="text-xs text-text-muted">Imersão total no seu negócio para definir objetivos e estratégias.</p>
+                                </div>
+                                <div class="gs-reveal" style="transition-delay: 0.2s;">
+                                    <div class="text-primary font-mono text-xs mb-4">STEP 02</div>
+                                    <h5 class="text-white font-bold mb-2">Design</h5>
+                                    <p class="text-xs text-text-muted">Criação de protótipos focados na experiência do usuário final.</p>
+                                </div>
+                                <div class="gs-reveal" style="transition-delay: 0.3s;">
+                                    <div class="text-secondary font-mono text-xs mb-4">STEP 03</div>
+                                    <h5 class="text-white font-bold mb-2">Build</h5>
+                                    <p class="text-xs text-text-muted">Desenvolvimento com código puro focado em performance máxima.</p>
+                                </div>
+                                <div class="gs-reveal" style="transition-delay: 0.4s;">
+                                    <div class="text-white font-mono text-xs mb-4">STEP 04</div>
+                                    <h5 class="text-white font-bold mb-2">Launch</h5>
+                                    <p class="text-xs text-text-muted">Testes rigorosos e entrega final com suporte contínuo.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Seção 05: Contato (A Conversão) -->
+        <section id="contato" class="relative py-32 bg-base overflow-hidden">
+            <div class="max-w-[1400px] mx-auto px-8 w-full relative z-10">
+                <div class="flex flex-col lg:flex-row gap-20">
+                    
+                    <!-- Esquerda: CTA Final e Info -->
+                    <div class="lg:w-1/2 space-y-12">
+                        <div class="telemetry-label kinetic-text">// CONVERSION_ENGINE_05</div>
+                        
+                        <h2 class="font-display font-bold text-6xl md:text-8xl tracking-tighter leading-none kinetic-text">
+                            VAMOS TIRAR SUA <br/>
+                            IDEIA DO <span class="text-gradient-scrub">PAPEL?</span>
+                        </h2>
+                        
+                        <p class="text-text-muted text-xl leading-relaxed max-w-xl cyber-decode" style="transition-delay: 0.2s;">
+                            Pronto para elevar seu produto digital? Deixe uma mensagem e vamos iniciar o processo de descoberta.
+                        </p>
+
+                        
+                        <div class="space-y-8 pt-8 kinetic-text" style="transition-delay: 0.4s;">
+                            <div class="flex items-center gap-6 group">
+                                <div class="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center border border-white/10 group-hover:border-accent/50 transition-colors">
+                                    <iconify-icon icon="solar:letter-bold-duotone" class="text-2xl text-accent"></iconify-icon>
+                                </div>
+                                <div>
+                                    <p class="text-[10px] font-mono text-text-muted uppercase tracking-widest">E-mail Direto</p>
+                                    <p class="text-white font-bold">contato@seuportfolio.com</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center gap-6 group">
+                                <div class="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center border border-white/10 group-hover:border-primary/50 transition-colors">
+                                    <iconify-icon icon="solar:map-point-wave-bold-duotone" class="text-2xl text-primary"></iconify-icon>
+                                </div>
+                                <div>
+                                    <p class="text-[10px] font-mono text-text-muted uppercase tracking-widest">Localização</p>
+                                    <p class="text-white font-bold">Disponível Remotamente — Baseado no Brasil</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Direita: Formulário Profissional -->
+                    <div class="lg:w-1/2 contact-3d-scene">
+                        <form id="contact-form-3d" class="bg-white/[0.02] border border-white/5 p-8 md:p-12 rounded-3xl backdrop-blur-xl space-y-8 kinetic-text" style="transition-delay: 0.3s;">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div class="space-y-2">
+                                    <label class="text-[10px] font-mono text-text-muted uppercase tracking-widest ml-1">Seu Nome</label>
+                                    <input type="text" placeholder="Ex: João Silva" class="input-field">
+                                </div>
+                                <div class="space-y-2">
+                                    <label class="text-[10px] font-mono text-text-muted uppercase tracking-widest ml-1">Seu E-mail</label>
+                                    <input type="email" placeholder="joao@empresa.com" class="input-field">
+                                </div>
+                            </div>
+                            
+                            <div class="space-y-2">
+                                <label class="text-[10px] font-mono text-text-muted uppercase tracking-widest ml-1">Tipo de Projeto</label>
+                                <div class="select-wrapper">
+                                    <select class="input-field appearance-none cursor-pointer bg-base">
+                                        <option value="ui-ux">UI/UX Design</option>
+                                        <option value="frontend">Desenvolvimento Front-end</option>
+                                        <option value="webgl">WebGL / Experiência 3D</option>
+                                        <option value="full">Projeto Completo (End-to-End)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="space-y-4">
+                                <label class="text-[10px] font-mono text-text-muted uppercase tracking-widest ml-1">Orçamento Estimado</label>
+                                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                    <div class="budget-option" onclick="selectBudget(this)">+R$ 1k</div>
+                                    <div class="budget-option active" onclick="selectBudget(this)">+R$ 3k</div>
+                                    <div class="budget-option" onclick="selectBudget(this)">+R$ 6k</div>
+                                    <div class="budget-option" onclick="selectBudget(this)">+R$ 10k</div>
+                                </div>
+                            </div>
+
+                            <div class="space-y-2">
+                                <label class="text-[10px] font-mono text-text-muted uppercase tracking-widest ml-1">Sua Mensagem</label>
+                                <textarea rows="4" placeholder="Conte-me um pouco sobre o desafio..." class="input-field resize-none"></textarea>
+                            </div>
+
+                            <button type="submit" class="u-button u-button-primary !w-full justify-center group relative overflow-hidden">
+                                <span class="relative z-10 flex items-center gap-2">
+                                    Enviar Proposta 
+                                    <iconify-icon icon="solar:paper-plane-bold-duotone" class="text-xl group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"></iconify-icon>
+                                </span>
+                            </button>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="relative py-20 bg-surface border-t border-white/5 overflow-hidden">
+            <div class="max-w-[1400px] mx-auto px-8 w-full relative z-10">
+                <div class="flex flex-col md:flex-row justify-between items-center gap-12">
+                    
+                    <div class="flex flex-col items-center md:items-start gap-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-2 h-2 bg-accent animate-pulse shadow-[0_0_10px_#00ffff]"></div>
+                            <span class="font-display font-bold text-lg tracking-tighter uppercase">Visual<span class="text-accent">.Arch</span></span>
+                        </div>
+                        <p class="text-[10px] font-mono text-text-muted uppercase tracking-widest">© 2026 — TODOS OS DIREITOS RESERVADOS</p>
+                    </div>
+
+                    <div class="flex gap-8 items-center">
+                        <a href="https://linkedin.com" target="_blank" class="flex items-center gap-3 text-text-muted hover:text-accent group transition-all">
+                            <iconify-icon icon="ri:linkedin-fill" class="text-2xl"></iconify-icon>
+                            <span class="font-mono text-[10px] uppercase tracking-widest hidden sm:block">LinkedIn</span>
+                        </a>
+                        <a href="https://github.com" target="_blank" class="flex items-center gap-3 text-text-muted hover:text-white group transition-all">
+                            <iconify-icon icon="ri:github-fill" class="text-2xl"></iconify-icon>
+                            <span class="font-mono text-[10px] uppercase tracking-widest hidden sm:block">GitHub</span>
+                        </a>
+                        <a href="https://behance.net" target="_blank" class="flex items-center gap-3 text-text-muted hover:text-blue-400 group transition-all">
+                            <iconify-icon icon="ri:behance-fill" class="text-2xl"></iconify-icon>
+                            <span class="font-mono text-[10px] uppercase tracking-widest hidden sm:block">Behance</span>
+                        </a>
+                        <a href="https://instagram.com" target="_blank" class="flex items-center gap-3 text-text-muted hover:text-primary group transition-all">
+                            <iconify-icon icon="ri:instagram-line" class="text-2xl"></iconify-icon>
+                            <span class="font-mono text-[10px] uppercase tracking-widest hidden sm:block">Instagram</span>
+                        </a>
+                    </div>
+
+                    <div class="text-right hidden lg:block">
+                        <p class="text-[10px] font-mono text-text-muted uppercase tracking-widest mb-2">// CURRENT_STATUS</p>
+                        <p class="text-white font-bold text-sm">Disponível para novos projetos.</p>
+                    </div>
+
+                </div>
+            </div>
+            
+            <!-- Scanline do Rodapé -->
+            <div class="absolute top-0 w-full h-[1px] bg-white/5 overflow-hidden">
+                <div class="scan-line"></div>
+            </div>
+        </footer>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            gsap.registerPlugin(ScrollTrigger);
+
+            // Clock
+            function updateClock() {
+                const now = new Date();
+                const time = now.toLocaleTimeString('pt-BR', { hour12: false });
+                document.getElementById('current-time').textContent = time;
+            }
+            setInterval(updateClock, 1000);
+            updateClock();
+
+            // GSAP Reveal Animations
+            const reveals = document.querySelectorAll('.gs-reveal, .kinetic-text');
+            reveals.forEach((el, i) => {
+                const isKinetic = el.classList.contains('kinetic-text');
+                
+                ScrollTrigger.create({
+                    trigger: el,
+                    start: "top 90%",
+                    once: true,
+                    onEnter: () => {
+                        if (isKinetic) {
+                            el.classList.add('active');
+                        } else {
+                            gsap.fromTo(el, 
+                                { autoAlpha: 0, y: 30, filter: 'blur(10px)' },
+                                { 
+                                    autoAlpha: 1, 
+                                    y: 0, 
+                                    filter: 'blur(0px)',
+                                    duration: 1, 
+                                    ease: "power2.out",
+                                    lazy: true
+                                }
+                            );
+                        }
+                    }
+                });
+            });
+
+            // Magnetic Button Effect
+            const magneticElements = document.querySelectorAll('.magnetic-wrap');
+            magneticElements.forEach(wrap => {
+                const trigger = wrap.querySelector('a');
+                
+                wrap.addEventListener('mousemove', (e) => {
+                    const rect = wrap.getBoundingClientRect();
+                    const x = e.clientX - rect.left - rect.width / 2;
+                    const y = e.clientY - rect.top - rect.height / 2;
+                    
+                    gsap.to(trigger, {
+                        x: x * 0.4,
+                        y: y * 0.4,
+                        duration: 0.6,
+                        ease: "power2.out",
+                        lazy: true
+                    });
+                });
+
+                wrap.addEventListener('mouseleave', () => {
+                    gsap.to(trigger, {
+                        x: 0,
+                        y: 0,
+                        duration: 0.8,
+                        ease: "elastic.out(1, 0.3)",
+                        lazy: true
+                    });
+                });
+            });
+
+            // Budget Selection Logic
+            window.selectBudget = function(el) {
+                document.querySelectorAll('.budget-option').forEach(opt => opt.classList.remove('active'));
+                el.classList.add('active');
+            };
+
+
+
+            // Fade Out do Texto Central da Hero ao rolar para baixo
+            gsap.to("#hero .hero-content", {
+                opacity: 0,
+                y: -100,
+                filter: "blur(10px)",
+                ease: "power2.inOut",
+                scrollTrigger: {
+                    trigger: "#hero",
+                    start: "top top",
+                    end: "+=200%",
+                    scrub: true
+                }
+            });
+
+            // --- Efeitos de fundo removidos ---
+
+            // --- Background (Gemini Code Implementation) ---
+            const auroraContainer = document.getElementById('aurora-container');
+            if (auroraContainer) {
+                const scene = new THREE.Scene();
+                const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+                const renderer = new THREE.WebGLRenderer({ antialias: true });
+                
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                auroraContainer.appendChild(renderer.domElement);
+                
+                const material = new THREE.ShaderMaterial({
+                    uniforms: {
+                        iTime: { value: 0 },
+                        iResolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) }
+                    },
+                    vertexShader: `
+                        void main() {
+                            gl_Position = vec4(position, 1.0);
+                        }
+                    `,
+                    fragmentShader: `
+                        uniform float iTime;
+                        uniform vec2 iResolution;
+
+                        #define NUM_OCTAVES 2
+
+                        float rand(vec2 n) {
+                            return fract(sin(dot(n, vec2(12.9898, 4.1414))) * 43758.5453);
+                        }
+
+                        float noise(vec2 p) {
+                            vec2 ip = floor(p);
+                            vec2 u = fract(p);
+                            u = u*u*(3.0-2.0*u);
+
+                            float res = mix(
+                                mix(rand(ip), rand(ip + vec2(1.0, 0.0)), u.x),
+                                mix(rand(ip + vec2(0.0, 1.0)), rand(ip + vec2(1.0, 1.0)), u.x), u.y);
+                            return res * res;
+                        }
+
+                        float fbm(vec2 x) {
+                            float v = 0.0;
+                            float a = 0.3;
+                            vec2 shift = vec2(100);
+                            mat2 rot = mat2(cos(0.5), sin(0.5), -sin(0.5), cos(0.5));
+                            for (int i = 0; i < NUM_OCTAVES; ++i) {
+                                v += a * noise(x);
+                                x = rot * x * 2.0 + shift;
+                                a *= 0.4;
+                            }
+                            return v;
+                        }
+
+                        void main() {
+                            vec2 shake = vec2(sin(iTime * 1.2) * 0.005, cos(iTime * 2.1) * 0.005);
+                            vec2 p = ((gl_FragCoord.xy + shake * iResolution.xy) - iResolution.xy * 0.5) / iResolution.y * mat2(6.0, -4.0, 4.0, 6.0);
+                            vec2 v;
+                            vec4 o = vec4(0.0);
+
+                            float f = 2.0 + fbm(p + vec2(iTime * 5.0, 0.0)) * 0.5;
+
+                            for (float i = 0.0; i < 24.0; i++) {
+                                v = p + cos(i * i + (iTime + p.x * 0.08) * 0.025 + i * vec2(13.0, 11.0)) * 3.5 + vec2(sin(iTime * 3.0 + i) * 0.003, cos(iTime * 3.5 - i) * 0.003);
+                                float tailNoise = fbm(v + vec2(iTime * 0.5, i)) * 0.3 * (1.0 - (i / 24.0));
+                                vec4 auroraColors = vec4(
+                                    0.1 + 0.3 * sin(i * 0.2 + iTime * 0.4),
+                                    0.3 + 0.5 * cos(i * 0.3 + iTime * 0.5),
+                                    0.7 + 0.3 * sin(i * 0.4 + iTime * 0.3),
+                                    1.0
+                                );
+                                vec4 currentContribution = auroraColors * exp(sin(i * i + iTime * 0.8)) / length(max(v, vec2(v.x * f * 0.015, v.y * 1.5)));
+                                float thinnessFactor = smoothstep(0.0, 1.0, i / 24.0) * 0.6;
+                                o += currentContribution * (1.0 + tailNoise * 0.8) * thinnessFactor;
+                            }
+
+                            o = tanh(pow(o / 100.0, vec4(1.6)));
+                            gl_FragColor = o * 1.5;
+                        }
+                    `
+                });
+
+                const geometry = new THREE.PlaneGeometry(2, 2);
+                const mesh = new THREE.Mesh(geometry, material);
+                scene.add(mesh);
+
+                let lastTime = 0;
+                let isAuroraVisible = false;
+
+                const observer = new IntersectionObserver((entries) => {
+                    isAuroraVisible = entries[0].isIntersecting;
+                }, { threshold: 0.1 });
+                observer.observe(auroraContainer);
+
+                const animate = (time) => {
+                    if (isAuroraVisible) {
+                        const delta = time - lastTime;
+                        if (delta > 16) { // Cap at ~60fps
+                            material.uniforms.iTime.value += 0.016;
+                            renderer.render(scene, camera);
+                            lastTime = time;
+                        }
+                    }
+                    requestAnimationFrame(animate);
+                };
+                requestAnimationFrame(animate);
+
+                let resizeTimeout;
+                const handleResize = () => {
+                    clearTimeout(resizeTimeout);
+                    resizeTimeout = setTimeout(() => {
+                        renderer.setSize(window.innerWidth, window.innerHeight);
+                        material.uniforms.iResolution.value.set(window.innerWidth, window.innerHeight);
+                    }, 200);
+                };
+                window.addEventListener('resize', handleResize);
+            }
+
+            // --- Particle Text Engine (Section 3) ---
+            const textCanvas = document.getElementById("text-particle-canvas");
+            if (textCanvas) {
+                const tCtx = textCanvas.getContext("2d", { willReadFrequently: true });
+                textCanvas.width = 1000;
+                textCanvas.height = 480; // Ajustado para coincidir com o container CSS
+
+                const particles = [];
+                const mouse = { x: 0, y: 0, isPressed: false };
+                const pixelSteps = 3; // Menor densidade para maior performance
+
+                class TextParticle {
+                    constructor(x, y, color) {
+                        this.pos = { x: Math.random() * textCanvas.width, y: Math.random() * textCanvas.height };
+                        this.vel = { x: 0, y: 0 };
+                        this.acc = { x: 0, y: 0 };
+                        this.target = { x: x, y: y };
+                        this.color = color;
+                        this.maxSpeed = Math.random() * 5 + 3;
+                        this.maxForce = 0.3;
+                        this.friction = 0.9;
+                        this.size = Math.random() * 1.5 + 1.5; // Partículas levemente maiores
+                    }
+
+                    update() {
+                        const dx = this.target.x - this.pos.x;
+                        const dy = this.target.y - this.pos.y;
+                        const dist = Math.sqrt(dx*dx + dy*dy);
+                        
+                        if (dist > 0.5) {
+                            let force = dist * 0.08;
+                            const mag = Math.sqrt(dx*dx + dy*dy);
+                            this.acc.x += (dx/mag) * Math.min(force, this.maxForce);
+                            this.acc.y += (dy/mag) * Math.min(force, this.maxForce);
+                        }
+
+                        // Mouse interaction
+                        const mdx = this.pos.x - mouse.x;
+                        const mdy = this.pos.y - mouse.y;
+                        const mdist = Math.sqrt(mdx*mdx + mdy*mdy);
+                        if (mdist < 80) {
+                            const mmag = Math.sqrt(mdx*mdx + mdy*mdy);
+                            this.acc.x += (mdx/mmag) * 4;
+                            this.acc.y += (mdy/mmag) * 4;
+                        }
+
+                        this.vel.x += this.acc.x;
+                        this.vel.y += this.acc.y;
+                        this.vel.x *= this.friction;
+                        this.vel.y *= this.friction;
+                        this.pos.x += this.vel.x;
+                        this.pos.y += this.vel.y;
+                        this.acc.x = 0;
+                        this.acc.y = 0;
+                    }
+
+                    draw() {
+                        tCtx.fillStyle = this.color;
+                        tCtx.fillRect(this.pos.x, this.pos.y, this.size, this.size);
+                    }
+                }
+
+                const initParticles = () => {
+                    const offCanvas = document.createElement("canvas");
+                    offCanvas.width = textCanvas.width;
+                    offCanvas.height = textCanvas.height;
+                    const oCtx = offCanvas.getContext("2d");
+
+                    oCtx.fillStyle = "white";
+                    oCtx.font = "bold 100px 'Outfit', sans-serif";
+                    oCtx.textAlign = "left";
+                    
+                    // Render line by line com maior espaçamento e tamanho
+                    oCtx.fillText("CÓDIGO QUE", 20, 150);
+                    oCtx.fillStyle = "#00f2ff"; 
+                    oCtx.font = "italic bold 110px 'Outfit', sans-serif";
+                    oCtx.fillText("RESPIRA", 20, 270);
+                    oCtx.fillStyle = "white";
+                    oCtx.font = "bold 100px 'Outfit', sans-serif";
+                    oCtx.fillText("PERFORMANCE.", 20, 390);
+
+                    const imgData = oCtx.getImageData(0, 0, offCanvas.width, offCanvas.height);
+                    const pixels = imgData.data;
+
+                    for (let y = 0; y < offCanvas.height; y += pixelSteps) {
+                        for (let x = 0; x < offCanvas.width; x += pixelSteps) {
+                            const index = (y * offCanvas.width + x) * 4;
+                            if (pixels[index + 3] > 128) {
+                                const r = pixels[index];
+                                const g = pixels[index + 1];
+                                const b = pixels[index + 2];
+                                particles.push(new TextParticle(x, y, `rgb(${r},${g},${b})`));
+                            }
+                        }
+                    }
+                };
+
+                let isTextVisible = false;
+                const textObserver = new IntersectionObserver((entries) => {
+                    isTextVisible = entries[0].isIntersecting;
+                }, { threshold: 0.1 });
+                textObserver.observe(textCanvas);
+
+                const animateText = () => {
+                    if (isTextVisible) {
+                        tCtx.clearRect(0, 0, textCanvas.width, textCanvas.height);
+                        particles.forEach(p => {
+                            p.update();
+                            p.draw();
+                        });
+                    }
+                    requestAnimationFrame(animateText);
+                };
+
+                textCanvas.addEventListener("mousemove", (e) => {
+                    const rect = textCanvas.getBoundingClientRect();
+                    mouse.x = (e.clientX - rect.left) * (textCanvas.width / rect.width);
+                    mouse.y = (e.clientY - rect.top) * (textCanvas.height / rect.height);
+                });
+
+                initParticles();
+                animateText();
+            }
+
+
+        });
+    </script>
+    <!-- Script do Fluido WebGL (OGL) para a Hero -->
+    <script type="module">
+        import { Renderer, Program, Mesh, Triangle, Vec2, RenderTarget, Color } from 'https://cdn.skypack.dev/ogl';
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const container = document.getElementById('fluid-canvas-container');
+            if (!container) return;
+
+            // Configurações da simulação adaptadas ao tema Visual Architect
+            const baseColor = [0.02, 0.02, 0.04]; // Deep Midnight
+            const glowColor = [0.0, 1.0, 1.0];   // Cyan Accent (--accent)
+            const dissipation = 0.98;
+
+            // 1. Setup Renderer
+            const renderer = new Renderer({
+                alpha: false,
+                dpr: Math.min(window.devicePixelRatio, 2)
+            });
+            const gl = renderer.gl;
+
+            gl.getExtension('OES_texture_float');
+            gl.getExtension('OES_texture_float_linear');
+
+            const simFragment = `
+                precision highp float;
+                uniform sampler2D uTexture;
+                uniform float uTime;
+                uniform vec2 uMouse;
+                uniform float uMouseActive;
+                uniform vec2 uResolution;
+                uniform float uAspect;
+                uniform float uDissipation;
+                uniform vec3 uBaseColor;
+                uniform vec3 uGlowColor;
+                varying vec2 vUv;
+
+                vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+                vec2 mod289(vec2 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+                vec3 permute(vec3 x) { return mod289(((x*34.0)+1.0)*x); }
+
+                float snoise(vec2 v) {
+                    const vec4 C = vec4(0.211324865405187, 0.366025403784439, -0.577350269189626, 0.024390243902439);
+                    vec2 i  = floor(v + dot(v, C.yy) );
+                    vec2 x0 = v -   i + dot(i, C.xx);
+                    vec2 i1;
+                    i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
+                    vec4 x12 = x0.xyxy + C.xxzz;
+                    x12.xy -= i1;
+                    i = mod289(i);
+                    vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 )) + i.x + vec3(0.0, i1.x, 1.0 ));
+                    vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy), dot(x12.zw,x12.zw)), 0.0);
+                    m = m*m ;
+                    m = m*m ;
+                    vec3 x = 2.0 * fract(p * C.www) - 1.0;
+                    vec3 h = abs(x) - 0.5;
+                    vec3 ox = floor(x + 0.5);
+                    vec3 a0 = x - ox;
+                    m *= 1.79284291400159 - 0.85373472095314 * ( a0*a0 + h*h );
+                    vec3 g;
+                    g.x  = a0.x  * x0.x  + h.x  * x0.y;
+                    g.yz = a0.yz * x12.xz + h.yz * x12.yw;
+                    return 130.0 * dot(m, g);
+                }
+
+                vec2 curl(vec2 p) {
+                    float eps = 0.001;
+                    float n1, n2, a, b;
+                    n1 = snoise(p + vec2(0, eps));
+                    n2 = snoise(p - vec2(0, eps));
+                    a = (n1 - n2) / (2.0 * eps);
+                    n1 = snoise(p + vec2(eps, 0));
+                    n2 = snoise(p - vec2(eps, 0));
+                    b = (n1 - n2) / (2.0 * eps);
+                    return vec2(a, -b);
+                }
+
+                void main() {
+                    vec2 uv = vUv;
+                    vec2 flow = curl(uv * 2.0 + uTime * 0.05);
+                    vec2 newUv = uv - flow * 0.003; 
+                    newUv -= 0.5;
+                    newUv *= 0.995; 
+                    newUv += 0.5;
+                    vec4 advected = texture2D(uTexture, newUv);
+                    vec2 mouse = uMouse;
+                    mouse.x *= uAspect;
+                    vec2 curUv = uv;
+                    curUv.x *= uAspect;
+                    float dist = length(curUv - mouse);
+                    float brush = smoothstep(0.05, 0.0, dist) * uMouseActive;
+                    vec3 injectColor = mix(uGlowColor, vec3(1.0), 0.5) * brush * 3.0;
+                    vec3 finalColor = advected.rgb + injectColor;
+                    finalColor *= uDissipation;
+                    gl_FragColor = vec4(finalColor, 1.0);
+                }
+            `;
+
+            const displayFragment = `
+                precision highp float;
+                uniform sampler2D uTexture;
+                varying vec2 vUv;
+                uniform vec3 uBaseColor;
+
+                void main() {
+                    vec4 color = texture2D(uTexture, vUv);
+                    vec3 c = color.rgb;
+                    c += uBaseColor * 0.2;
+                    c = pow(c, vec3(1.4)); 
+                    float noise = fract(sin(dot(vUv, vec2(12.9898, 78.233))) * 43758.5453);
+                    c += noise * 0.02;
+                    gl_FragColor = vec4(c, 1.0);
+                }
+            `;
+
+            const geometry = new Triangle(gl);
+
+            const simProgram = new Program(gl, {
+                vertex: `attribute vec2 uv; attribute vec2 position; varying vec2 vUv; void main() { vUv = uv; gl_Position = vec4(position, 0, 1); }`,
+                fragment: simFragment,
+                uniforms: {
+                    uTexture: { value: null },
+                    uTime: { value: 0 },
+                    uMouse: { value: new Vec2(0, 0) },
+                    uMouseActive: { value: 0 },
+                    uResolution: { value: new Vec2(0, 0) },
+                    uAspect: { value: 1 },
+                    uDissipation: { value: dissipation },
+                    uBaseColor: { value: new Color(baseColor[0], baseColor[1], baseColor[2]) },
+                    uGlowColor: { value: new Color(glowColor[0], glowColor[1], glowColor[2]) },
+                },
+            });
+
+            const displayProgram = new Program(gl, {
+                vertex: `attribute vec2 uv; attribute vec2 position; varying vec2 vUv; void main() { vUv = uv; gl_Position = vec4(position, 0, 1); }`,
+                fragment: displayFragment,
+                uniforms: {
+                    uTexture: { value: null },
+                    uBaseColor: { value: new Color(baseColor[0], baseColor[1], baseColor[2]) },
+                },
+            });
+
+            const simMesh = new Mesh(gl, { geometry, program: simProgram });
+            const displayMesh = new Mesh(gl, { geometry, program: displayProgram });
+
+            const fboArgs = {
+                width: window.innerWidth >> 1,
+                height: window.innerHeight >> 1,
+                type: gl.HALF_FLOAT || gl.FLOAT,
+                internalFormat: gl.RGBA16F || gl.RGBA,
+                minFilter: gl.LINEAR,
+                magFilter: gl.LINEAR,
+            };
+            
+            let fboRead = new RenderTarget(gl, fboArgs);
+            let fboWrite = new RenderTarget(gl, fboArgs);
+
+            const mouse = new Vec2(0, 0);
+            const targetMouse = new Vec2(0, 0);
+            let isMoving = 0;
+
+            let resizeTimeout;
+            const resize = () => {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(() => {
+                    const w = container.offsetWidth;
+                    const h = container.offsetHeight;
+                    renderer.setSize(w, h);
+                    const fboW = w >> 1;
+                    const fboH = h >> 1;
+                    fboRead.setSize(fboW, fboH);
+                    fboWrite.setSize(fboW, fboH);
+                    simProgram.uniforms.uResolution.value.set(w, h);
+                    simProgram.uniforms.uAspect.value = w / h;
+                }, 200);
+            }
+
+            window.addEventListener('resize', resize);
+            resize();
+
+            function updateMouse(x, y) {
+                const rect = container.getBoundingClientRect();
+                targetMouse.set((x - rect.left) / rect.width, 1.0 - (y - rect.top) / rect.height);
+                isMoving = 1.0;
+            }
+
+            window.addEventListener('mousemove', e => updateMouse(e.clientX, e.clientY));
+            window.addEventListener('touchmove', e => updateMouse(e.touches[0].clientX, e.touches[0].clientY));
+
+            let isHeroVisible = true;
+            const heroObserver = new IntersectionObserver((entries) => {
+                isHeroVisible = entries[0].isIntersecting;
+            }, { threshold: 0.01 });
+            heroObserver.observe(container);
+
+            function update(t) {
+                requestAnimationFrame(update);
+                if (!isHeroVisible) return;
+                
+                const time = t * 0.001;
+                mouse.lerp(targetMouse, 0.15);
+                if (Math.abs(mouse.x - targetMouse.x) < 0.001) isMoving *= 0.9;
+                simProgram.uniforms.uTime.value = time;
+                simProgram.uniforms.uMouse.value.copy(mouse);
+                simProgram.uniforms.uMouseActive.value = isMoving;
+                simProgram.uniforms.uTexture.value = fboRead.texture;
+                renderer.render({ scene: simMesh, target: fboWrite });
+                displayProgram.uniforms.uTexture.value = fboWrite.texture;
+                renderer.render({ scene: displayMesh });
+                const temp = fboRead;
+                fboRead = fboWrite;
+                fboWrite = temp;
+            }
+            requestAnimationFrame(update);
+            container.appendChild(gl.canvas);
+        });
+    </script>
+
+    <!-- Filtro SVG invisível para efeito de brilho unopaq -->
+    <svg width="0" height="0" style="position: absolute;">
+        <filter id="unopaq">
+            <feColorMatrix in="SourceGraphic" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 100 -50" />
+        </filter>
+    </svg>
+    <footer class="relative w-full h-[600px] overflow-hidden bg-base border-t border-border mt-20" id="footer-eye-section">
+        <!-- Evil Eye Background Container -->
+        <div id="evil-eye-footer-container" class="absolute inset-0 z-0 pointer-events-none"></div>
+        
+        <!-- Footer Content -->
+
+
+        <div class="relative z-10 container mx-auto px-6 h-full flex flex-col justify-between py-20">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+                <div class="space-y-6">
+                    <h3 class="text-2xl font-display font-bold text-text-main">Visual<span class="text-primary">Architect</span></h3>
+                    <p class="text-text-muted text-sm leading-relaxed max-w-xs">
+                        Transformando conceitos complexos em experiências digitais imersivas e funcionais. 
+                        Especialista em design de interface de alto impacto.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="text-sm font-mono text-accent uppercase tracking-widest mb-6">Navegação</h4>
+                    <ul class="space-y-4 text-sm text-text-muted">
+                        <li><a href="#hero" class="hover:text-primary transition-colors">Início</a></li>
+                        <li><a href="#sobre" class="hover:text-primary transition-colors">Sobre</a></li>
+                        <li><a href="#projetos" class="hover:text-primary transition-colors">Projetos</a></li>
+                        <li><a href="#contato" class="hover:text-primary transition-colors">Contato</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-sm font-mono text-accent uppercase tracking-widest mb-6">Serviços</h4>
+                    <ul class="space-y-4 text-sm text-text-muted">
+                        <li>UI/UX Design</li>
+                        <li>Motion Graphics</li>
+                        <li>Desenvolvimento Web</li>
+                        <li>Branding Digital</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-sm font-mono text-accent uppercase tracking-widest mb-6">Conectar</h4>
+                    <div class="flex gap-4">
+                        <a href="#" class="w-10 h-10 rounded border border-border flex items-center justify-center hover:border-primary transition-all group">
+                            <iconify-icon icon="mdi:github" class="text-xl group-hover:text-primary"></iconify-icon>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded border border-border flex items-center justify-center hover:border-primary transition-all group">
+                            <iconify-icon icon="mdi:linkedin" class="text-xl group-hover:text-primary"></iconify-icon>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded border border-border flex items-center justify-center hover:border-primary transition-all group">
+                            <iconify-icon icon="mdi:twitter" class="text-xl group-hover:text-primary"></iconify-icon>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-10 border-t border-border flex flex-col md:flex-row justify-between items-center gap-6 text-xs text-text-muted font-mono uppercase tracking-widest">
+                <p>© 2026 Visual Architect. Todos os direitos reservados.</p>
+                <div class="flex gap-8">
+                    <a href="#" class="hover:text-white transition-colors">Política de Privacidade</a>
+                    <a href="#" class="hover:text-white transition-colors">Termos de Uso</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Motion.dev Library Integration -->
+    <script type="module">
+        import { animate, scroll, inView } from "https://cdn.jsdelivr.net/npm/motion@12.37.0/+esm";
+
+
+
+        // Performance: Entry animation for all .motion-animate elements
+        inView(".motion-animate", ({ target }) => {
+            animate(target, 
+                { opacity: [0, 1], transform: ["translateY(30px)", "translateY(0px)"] },
+                { duration: 0.9, easing: [0.17, 0.55, 0.55, 1] }
+            );
+        });
+
+        // Staggered entrance specifically for Formation Cards (.galactic-card)
+        inView("#sobre", () => {
+            animate(".galactic-card", 
+                { opacity: [0, 1], transform: ["scale(0.9) translateY(20px)", "scale(1) translateY(0px)"] },
+                { 
+                    delay: (i) => i * 0.15,
+                    duration: 0.8,
+                    easing: [0.17, 0.55, 0.55, 1]
+                }
+            );
+        });
+
+        // Hover animations for Galactic Cards
+        document.querySelectorAll('.galactic-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                animate(card, { scale: 1.05, filter: "brightness(1.2)" }, { duration: 0.4 });
+            });
+            card.addEventListener('mouseleave', () => {
+                animate(card, { scale: 1, filter: "brightness(1)" }, { duration: 0.4 });
+            });
+        });
+
+        // 3D Tilt Effect for Contact Form using Motion
+        const contactForm = document.querySelector('#contact-form-3d');
+        const contactWrapper = contactForm ? contactForm.parentElement : null;
+
+        if (contactWrapper && contactForm) {
+            contactWrapper.addEventListener('mousemove', (e) => {
+                const rect = contactWrapper.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const rotateX = ((y - centerY) / centerY) * -15; 
+                const rotateY = ((x - centerX) / centerX) * 15;
+                
+                animate(contactForm, { 
+                    rotateX: rotateX + "deg", 
+                    rotateY: rotateY + "deg",
+                    scale: 1.03
+                }, { duration: 0.1 });
+            });
+
+            contactWrapper.addEventListener('mouseleave', () => {
+                animate(contactForm, { 
+                    rotateX: "0deg", 
+                    rotateY: "0deg",
+                    scale: 1
+                }, { duration: 0.6, easing: [0.17, 0.55, 0.55, 1] });
+            });
+        }
+
+        // Section Transitions and Parallax Implementation
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll('section');
+            const dots = document.querySelectorAll('.side-nav-dot');
+            
+            // 1. Entrance Lens Effect for Each Section
+            sections.forEach((section) => {
+                if (section.id === 'hero') return; // Hero has its own entrance
+
+                gsap.fromTo(section, 
+                    { scale: 0.95, opacity: 0, filter: 'blur(20px)' },
+                    {
+                        scale: 1, opacity: 1, filter: 'blur(0px)',
+                        duration: 1.5,
+                        ease: "expo.out",
+                        scrollTrigger: {
+                            trigger: section,
+                            start: "top 85%",
+                            toggleActions: "play none none reverse"
+                        }
+                    }
+                );
+            });
+
+            // 3. Side Nav Sync
+
+            sections.forEach((section) => {
+                ScrollTrigger.create({
+                    trigger: section,
+                    start: "top center",
+                    end: "bottom center",
+                    onToggle: self => {
+                        if (self.isActive) {
+                            dots.forEach(dot => {
+                                dot.classList.toggle('active', dot.getAttribute('data-section') === section.id);
+                            });
+                        }
+                    }
+                });
+            });
+
+            // 4. Smooth Scroll for Nav
+            dots.forEach(dot => {
+                dot.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = dot.getAttribute('href');
+                    gsap.to(window, {
+                        duration: 1.2,
+                        scrollTo: targetId,
+                        ease: "power4.inOut"
+                    });
+                });
+            });
+
+            // 5. Cyber Decode Text Animation
+            const decodeElements = document.querySelectorAll('.cyber-decode');
+            const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ@#$%^&*()_+";
+
+            decodeElements.forEach(el => {
+                const originalText = el.innerText;
+                
+                ScrollTrigger.create({
+                    trigger: el,
+                    start: "top 90%",
+                    onEnter: () => {
+                        el.classList.add('decoded');
+                        let iterations = 0;
+                        const interval = setInterval(() => {
+                            el.innerText = originalText.split("")
+                                .map((letter, index) => {
+                                    if (index < iterations) return originalText[index];
+                                    if (letter === " ") return " ";
+                                    return chars[Math.floor(Math.random() * chars.length)];
+                                })
+                                .join("");
+
+                            if (iterations >= originalText.length) {
+                                clearInterval(interval);
+                                el.innerText = originalText;
+                            }
+                            iterations += originalText.length / 40; // Velocidade da decodificação
+                        }, 30);
+                    }
+                });
+            });
+        });
+    </script>
+
+
+
+    <!-- Evil Eye Footer Shader Logic -->
+    <script type="module">
+        import { Renderer, Program, Mesh, Triangle, Texture } from 'https://cdn.skypack.dev/ogl';
+
+        (function() {
+            const config = {
+                primaryColor: '#ff4500', // Laranja Primário
+                accentColor: '#00ffff',  // Ciano Accent
+                intensity: 1.0,          // Reduzido para não ofuscar o texto
+                pupilSize: 0.45,         // Pupila mais definida
+                irisWidth: 0.25,
+                glowIntensity: 0.3,      // Aura mais sutil
+                scale: 0.8,              // Menor para ficar no centro
+                noiseScale: 1.0,
+                pupilFollow: 0.6,        // Movimento mais sutil
+                flameSpeed: 0.8,         // Mais calmo
+            };
+
+
+            function hexToVec3(hex) {
+                const h = hex.replace('#', '');
+                return [
+                    parseInt(h.slice(0, 2), 16) / 255,
+                    parseInt(h.slice(2, 4), 16) / 255,
+                    parseInt(h.slice(4, 6), 16) / 255
+                ];
+            }
+
+            function generateNoiseTexture(gl, size = 256) {
+                const data = new Uint8Array(size * size * 4);
+                function hash(x, y, s) {
+                    let n = x * 374761393 + y * 668265263 + s * 1274126177;
+                    n = Math.imul(n ^ (n >>> 13), 1274126177);
+                    return ((n ^ (n >>> 16)) >>> 0) / 4294967296;
+                }
+                function noise(px, py, freq, seed) {
+                    const fx = (px / size) * freq;
+                    const fy = (py / size) * freq;
+                    const ix = Math.floor(fx);
+                    const iy = Math.floor(fy);
+                    const tx = fx - ix;
+                    const ty = fy - iy;
+                    const w = freq | 0;
+                    const v00 = hash(((ix % w) + w) % w, ((iy % w) + w) % w, seed);
+                    const v10 = hash((((ix + 1) % w) + w) % w, ((iy % w) + w) % w, seed);
+                    const v01 = hash(((ix % w) + w) % w, (((iy + 1) % w) + w) % w, seed);
+                    const v11 = hash((((ix + 1) % w) + w) % w, (((iy + 1) % w) + w) % w, seed);
+                    return v00 * (1 - tx) * (1 - ty) + v10 * tx * (1 - ty) + v01 * (1 - tx) * ty + v11 * tx * ty;
+                }
+                for (let y = 0; y < size; y++) {
+                    for (let x = 0; x < size; x++) {
+                        let v = 0; let amp = 0.4; let totalAmp = 0;
+                        for (let o = 0; o < 8; o++) {
+                            const f = 32 * (1 << o);
+                            v += amp * noise(x, y, f, o * 31);
+                            totalAmp += amp;
+                            amp *= 0.65;
+                        }
+                        v /= totalAmp;
+                        v = (v - 0.5) * 2.2 + 0.5;
+                        v = Math.max(0, Math.min(1, v));
+                        const val = Math.round(v * 255);
+                        const i = (y * size + x) * 4;
+                        data[i] = data[i+1] = data[i+2] = val; data[i+3] = 255;
+                    }
+                }
+                const texture = new Texture(gl, {
+                    image: data, width: size, height: size,
+                    generateMipmaps: false, flipY: false,
+                });
+                texture.minFilter = gl.LINEAR; texture.magFilter = gl.LINEAR;
+                texture.wrapS = texture.wrapT = gl.REPEAT;
+                return texture;
+            }
+
+            const vertexShader = `
+                attribute vec2 uv;
+                attribute vec2 position;
+                varying vec2 vUv;
+                void main() {
+                    vUv = uv;
+                    gl_Position = vec4(position, 0, 1);
+                }
+            `;
+
+            const fragmentShader = `
+                precision highp float;
+                uniform float uTime;
+                uniform vec3 uResolution;
+                uniform sampler2D uNoiseTexture;
+                uniform float uPupilSize;
+                uniform float uIrisWidth;
+                uniform float uGlowIntensity;
+                uniform float uIntensity;
+                uniform float uScale;
+                uniform float uNoiseScale;
+                uniform vec2 uMouse;
+                uniform float uPupilFollow;
+                uniform float uFlameSpeed;
+                uniform vec3 uPrimaryColor;
+                uniform vec3 uAccentColor;
+
+                void main() {
+                    vec2 uv = (gl_FragCoord.xy * 2.0 - uResolution.xy) / uResolution.y;
+                    uv /= uScale;
+                    float ft = uTime * uFlameSpeed;
+
+                    float polarRadius = length(uv) * 2.0;
+                    float polarAngle = (2.0 * atan(uv.x, uv.y)) / 6.28 * 0.3;
+                    vec2 polarUv = vec2(polarRadius, polarAngle);
+
+                    vec4 noiseA = texture2D(uNoiseTexture, polarUv * vec2(0.2, 7.0) * uNoiseScale + vec2(-ft * 0.1, 0.0));
+                    vec4 noiseB = texture2D(uNoiseTexture, polarUv * vec2(0.3, 4.0) * uNoiseScale + vec2(-ft * 0.2, 0.0));
+                    vec4 noiseC = texture2D(uNoiseTexture, polarUv * vec2(0.1, 5.0) * uNoiseScale + vec2(-ft * 0.1, 0.0));
+
+                    float distanceMask = 1.0 - length(uv);
+
+                    // Iris/Ring
+                    float innerRing = clamp(-1.0 * ((distanceMask - 0.7) / uIrisWidth), 0.0, 1.0);
+                    innerRing = (innerRing * distanceMask - 0.2) / 0.28;
+                    innerRing += noiseA.r - 0.5;
+                    innerRing *= 1.3;
+                    innerRing = clamp(innerRing, 0.0, 1.0);
+
+                    float outerRing = clamp(-1.0 * ((distanceMask - 0.5) / 0.2), 0.0, 1.0);
+                    outerRing = (outerRing * distanceMask - 0.1) / 0.38;
+                    outerRing += noiseC.r - 0.5;
+                    outerRing *= 1.3;
+                    outerRing = clamp(outerRing, 0.0, 1.0);
+
+                    innerRing += outerRing;
+
+                    // Eye Structure
+                    float innerEye = distanceMask - 0.1 * 2.0;
+                    innerEye *= noiseB.r * 2.0;
+
+                    vec2 pupilOffset = uMouse * uPupilFollow * 0.15;
+                    vec2 pupilUv = uv - pupilOffset;
+                    float pupil = 1.0 - length(pupilUv * vec2(9.0, 2.3));
+                    pupil *= uPupilSize;
+                    pupil = clamp(pupil, 0.0, 1.0);
+                    pupil /= 0.35;
+
+                    // Glow colors (mix primary and accent)
+                    float outerEyeGlow = 1.0 - length(uv * vec2(0.5, 1.5));
+                    outerEyeGlow = clamp(outerEyeGlow + 0.5, 0.0, 1.0);
+                    outerEyeGlow += noiseC.r - 0.5;
+                    float outerBgGlow = outerEyeGlow;
+                    outerEyeGlow = pow(outerEyeGlow, 2.0);
+                    outerEyeGlow += distanceMask;
+                    outerEyeGlow *= uGlowIntensity;
+                    outerEyeGlow = clamp(outerEyeGlow, 0.0, 1.0);
+                    outerEyeGlow *= pow(1.0 - distanceMask, 2.0) * 2.5;
+
+                    outerBgGlow += distanceMask;
+                    outerBgGlow = pow(outerBgGlow, 0.5);
+                    outerBgGlow *= 0.15;
+
+                    // Color mixing based on radius
+                    vec3 finalColor = mix(uPrimaryColor, uAccentColor, smoothstep(0.2, 0.8, length(uv)));
+                    vec3 color = finalColor * uIntensity * clamp(max(innerRing + innerEye, outerEyeGlow + outerBgGlow) - pupil, 0.0, 3.0);
+                    
+                    float alpha = clamp(length(color) * 0.8, 0.0, 1.0); // Alpha mais suave
+                    gl_FragColor = vec4(color, alpha);
+                }
+
+            `;
+
+            const container = document.getElementById('evil-eye-footer-container');
+            const footer = document.getElementById('footer-eye-section');
+            if (!container || !footer) return;
+
+            const renderer = new Renderer({ alpha: true, premultipliedAlpha: true });
+            const gl = renderer.gl;
+
+            const noiseTexture = generateNoiseTexture(gl, 256);
+            const mouse = { x: 0, y: 0, tx: 0, ty: 0 };
+            let isVisible = false;
+
+            window.addEventListener('mousemove', (e) => {
+                const rect = footer.getBoundingClientRect();
+                // Ativamos o movimento mesmo se não estiver visível para lerp suave ao entrar
+                mouse.tx = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+                mouse.ty = -(((e.clientY - rect.top) / rect.height) * 2 - 1);
+            });
+
+            const geometry = new Triangle(gl);
+            const program = new Program(gl, {
+                vertex: vertexShader,
+                fragment: fragmentShader,
+                transparent: true,
+                uniforms: {
+                    uTime: { value: 0 },
+                    uResolution: { value: [window.innerWidth, window.innerHeight, 1] },
+                    uNoiseTexture: { value: noiseTexture },
+                    uPupilSize: { value: config.pupilSize },
+                    uIrisWidth: { value: config.irisWidth },
+                    uGlowIntensity: { value: config.glowIntensity },
+                    uIntensity: { value: config.intensity },
+                    uScale: { value: config.scale },
+                    uNoiseScale: { value: config.noiseScale },
+                    uMouse: { value: [0, 0] },
+                    uPupilFollow: { value: config.pupilFollow },
+                    uFlameSpeed: { value: config.flameSpeed },
+                    uPrimaryColor: { value: hexToVec3(config.primaryColor) },
+                    uAccentColor: { value: hexToVec3(config.accentColor) }
+                }
+            });
+
+
+            const mesh = new Mesh(gl, { geometry, program });
+            container.appendChild(gl.canvas);
+
+            function resize() {
+                const w = container.offsetWidth || window.innerWidth;
+                const h = container.offsetHeight || 600;
+                renderer.setSize(w, h);
+                program.uniforms.uResolution.value = [gl.canvas.width, gl.canvas.height, gl.canvas.width / gl.canvas.height];
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            const observer = new IntersectionObserver((entries) => {
+                isVisible = entries[0].isIntersecting;
+            }, { threshold: 0 });
+            observer.observe(footer);
+
+            function update(time) {
+                requestAnimationFrame(update);
+                if (!isVisible) return;
+                
+                mouse.x += (mouse.tx - mouse.x) * 0.05;
+                mouse.y += (mouse.ty - mouse.y) * 0.05;
+                
+                program.uniforms.uMouse.value = [mouse.x, mouse.y];
+                program.uniforms.uTime.value = time * 0.001;
+                renderer.render({ scene: mesh });
+            }
+            requestAnimationFrame(update);
+        })();
+    </script>
+</body>
+</html>
+

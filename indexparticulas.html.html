@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Efeito de Partículas - Arquivo Único</title>
+  
+  <style>
+    /* --- SEU CSS AQUI --- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #000000;
+      font-family: sans-serif;
+    }
+
+    .particle-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 1rem;
+    }
+
+    #particle-canvas {
+      border: 1px solid #1f2937; /* Borda cinza escura */
+      border-radius: 0.5rem;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); /* Sombra 2xl */
+      max-width: 100%;
+      height: auto;
+      display: block;
+      cursor: crosshair;
+    }
+
+    .particle-info {
+      margin-top: 1rem;
+      color: #ffffff;
+      font-size: 0.875rem;
+      text-align: center;
+      max-width: 28rem;
+    }
+
+    .particle-info .title {
+      margin-bottom: 0.5rem;
+      font-weight: bold;
+    }
+
+    .particle-info .subtitle {
+      color: #9ca3af;
+      font-size: 0.75rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- --- SEU HTML AQUI --- -->
+  <div class="particle-container">
+    <canvas id="particle-canvas"></canvas>
+    
+    <div class="particle-info">
+      <p class="title">Efeito de Texto com Partículas</p>
+      <p class="subtitle">
+        Clique com o botão direito e segure enquanto move o mouse para destruir as partículas • As palavras mudam automaticamente a cada 4 segundos
+      </p>
+    </div>
+  </div>
+
+  <!-- --- SEU JAVASCRIPT AQUI --- -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const canvas = document.getElementById("particle-canvas");
+      if (!canvas) return;
+
+      const ctx = canvas.getContext("2d");
+      canvas.width = 1000;
+      canvas.height = 500;
+
+      // Você pode alterar as palavras aqui!
+      const words = ["OLÁ", "PERFORMANCE", "CÓDIGO", "PURO", "DESIGN"];
+      
+      let animationFrameId;
+      const particles = [];
+      let frameCount = 0;
+      let wordIndex = 0;
+      const mouse = { x: 0, y: 0, isPressed: false, isRightClick: false };
+
+      const pixelSteps = 6;
+      const drawAsPoints = true;
+
+      class Particle {
+        constructor() {
+          this.pos = { x: 0, y: 0 };
+          this.vel = { x: 0, y: 0 };
+          this.acc = { x: 0, y: 0 };
+          this.target = { x: 0, y: 0 };
+
+          this.closeEnoughTarget = 100;
+          this.maxSpeed = 1.0;
+          this.maxForce = 0.1;
+          this.particleSize = 10;
+          this.isKilled = false;
+
+          this.startColor = { r: 0, g: 0, b: 0 };
+          this.targetColor = { r: 0, g: 0, b: 0 };
+          this.colorWeight = 0;
+          this.colorBlendRate = 0.01;
+        }
+
+        move() {
+          let proximityMult = 1;
+          const dx = this.target.x - this.pos.x;
+          const dy = this.target.y - this.pos.y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+
+          if (distance < this.closeEnoughTarget) {
+            proximityMult = distance / this.closeEnoughTarget;
+          }
+
+          const towardsTarget = { x: dx, y: dy };
+          const magnitude = Math.sqrt(towardsTarget.x * towardsTarget.x + towardsTarget.y * towardsTarget.y);
+          
+          if (magnitude > 0) {
+            towardsTarget.x = (towardsTarget.x / magnitude) * this.maxSpeed * proximityMult;
+            towardsTarget.y = (towardsTarget.y / magnitude) * this.maxSpeed * proximityMult;
+          }
+
+          const steer = {
+            x: towardsTarget.x - this.vel.x,
+            y: towardsTarget.y - this.vel.y,
+          };
+
+          const steerMagnitude = Math.sqrt(steer.x * steer.x + steer.y * steer.y);
+          if (steerMagnitude > 0) {
+            steer.x = (steer.x / steerMagnitude) * this.maxForce;
+            steer.y = (steer.y / steerMagnitude) * this.maxForce;
+          }
+
+          this.acc.x += steer.x;
+          this.acc.y += steer.y;
+
+          this.vel.x += this.acc.x;
+          this.vel.y += this.acc.y;
+          this.pos.x += this.vel.x;
+          this.pos.y += this.vel.y;
+          this.acc.x = 0;
+          this.acc.y = 0;
+        }
+
+        draw(ctx, drawAsPoints) {
+          if (this.colorWeight < 1.0) {
+            this.colorWeight = Math.min(this.colorWeight + this.colorBlendRate, 1.0);
+          }
+
+          const currentColor = {
+            r: Math.round(this.startColor.r + (this.targetColor.r - this.startColor.r) * this.colorWeight),
+            g: Math.round(this.startColor.g + (this.targetColor.g - this.startColor.g) * this.colorWeight),
+            b: Math.round(this.startColor.b + (this.targetColor.b - this.startColor.b) * this.colorWeight),
+          };
+
+          ctx.fillStyle = `rgb(${currentColor.r}, ${currentColor.g}, ${currentColor.b})`;
+          if (drawAsPoints) {
+            ctx.fillRect(this.pos.x, this.pos.y, 2, 2);
+          } else {
+            ctx.beginPath();
+            ctx.arc(this.pos.x, this.pos.y, this.particleSize / 2, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+
+        kill(width, height) {
+          if (!this.isKilled) {
+            const randomPos = generateRandomPos(width / 2, height / 2, (width + height) / 2);
+            this.target.x = randomPos.x;
+            this.target.y = randomPos.y;
+
+            this.startColor = {
+              r: this.startColor.r + (this.targetColor.r - this.startColor.r) * this.colorWeight,
+              g: this.startColor.g + (this.targetColor.g - this.startColor.g) * this.colorWeight,
+              b: this.startColor.b + (this.targetColor.b - this.startColor.b) * this.colorWeight,
+            };
+            this.targetColor = { r: 0, g: 0, b: 0 };
+            this.colorWeight = 0;
+            this.isKilled = true;
+          }
+        }
+      }
+
+      const generateRandomPos = (x, y, mag) => {
+        const randomX = Math.random() * 1000;
+        const randomY = Math.random() * 500;
+        const direction = { x: randomX - x, y: randomY - y };
+        const magnitude = Math.sqrt(direction.x * direction.x + direction.y * direction.y);
+        
+        if (magnitude > 0) {
+          direction.x = (direction.x / magnitude) * mag;
+          direction.y = (direction.y / magnitude) * mag;
+        }
+
+        return { x: x + direction.x, y: y + direction.y };
+      };
+
+      const nextWord = (word, canvasObj) => {
+        const offscreenCanvas = document.createElement("canvas");
+        offscreenCanvas.width = canvasObj.width;
+        offscreenCanvas.height = canvasObj.height;
+        const offscreenCtx = offscreenCanvas.getContext("2d");
+
+        offscreenCtx.fillStyle = "white";
+        offscreenCtx.font = "bold 100px Arial";
+        offscreenCtx.textAlign = "center";
+        offscreenCtx.textBaseline = "middle";
+        offscreenCtx.fillText(word, canvasObj.width / 2, canvasObj.height / 2);
+
+        const imageData = offscreenCtx.getImageData(0, 0, canvasObj.width, canvasObj.height);
+        const pixels = imageData.data;
+
+        const newColor = {
+          r: Math.random() * 255,
+          g: Math.random() * 255,
+          b: Math.random() * 255,
+        };
+
+        let particleIndex = 0;
+        const coordsIndexes = [];
+        
+        for (let i = 0; i < pixels.length; i += pixelSteps * 4) {
+          coordsIndexes.push(i);
+        }
+
+        for (let i = coordsIndexes.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [coordsIndexes[i], coordsIndexes[j]] = [coordsIndexes[j], coordsIndexes[i]];
+        }
+
+        for (const pixelIndex of coordsIndexes) {
+          const alpha = pixels[pixelIndex + 3];
+
+          if (alpha > 0) {
+            const x = (pixelIndex / 4) % canvasObj.width;
+            const y = Math.floor(pixelIndex / 4 / canvasObj.width);
+
+            let particle;
+            if (particleIndex < particles.length) {
+              particle = particles[particleIndex];
+              particle.isKilled = false;
+              particleIndex++;
+            } else {
+              particle = new Particle();
+              const randomPos = generateRandomPos(canvasObj.width / 2, canvasObj.height / 2, (canvasObj.width + canvasObj.height) / 2);
+              particle.pos.x = randomPos.x;
+              particle.pos.y = randomPos.y;
+              particle.maxSpeed = Math.random() * 6 + 4;
+              particle.maxForce = particle.maxSpeed * 0.05;
+              particle.particleSize = Math.random() * 6 + 6;
+              particle.colorBlendRate = Math.random() * 0.0275 + 0.0025;
+              particles.push(particle);
+            }
+
+            particle.startColor = {
+              r: particle.startColor.r + (particle.targetColor.r - particle.startColor.r) * particle.colorWeight,
+              g: particle.startColor.g + (particle.targetColor.g - particle.startColor.g) * particle.colorWeight,
+              b: particle.startColor.b + (particle.targetColor.b - particle.startColor.b) * particle.colorWeight,
+            };
+            particle.targetColor = newColor;
+            particle.colorWeight = 0;
+            particle.target.x = x;
+            particle.target.y = y;
+          }
+        }
+
+        for (let i = particleIndex; i < particles.length; i++) {
+          particles[i].kill(canvasObj.width, canvasObj.height);
+        }
+      };
+
+      const animate = () => {
+        ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        for (let i = particles.length - 1; i >= 0; i--) {
+          const particle = particles[i];
+          particle.move();
+          particle.draw(ctx, drawAsPoints);
+
+          if (particle.isKilled) {
+            if (
+              particle.pos.x < 0 || particle.pos.x > canvas.width ||
+              particle.pos.y < 0 || particle.pos.y > canvas.height
+            ) {
+              particles.splice(i, 1);
+            }
+          }
+        }
+
+        if (mouse.isPressed && mouse.isRightClick) {
+          particles.forEach((particle) => {
+            const dx = particle.pos.x - mouse.x;
+            const dy = particle.pos.y - mouse.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            if (distance < 50) {
+              particle.kill(canvas.width, canvas.height);
+            }
+          });
+        }
+
+        frameCount++;
+        if (frameCount % 240 === 0) {
+          wordIndex = (wordIndex + 1) % words.length;
+          nextWord(words[wordIndex], canvas);
+        }
+
+        animationFrameId = requestAnimationFrame(animate);
+      };
+
+      canvas.addEventListener("mousedown", (e) => {
+        mouse.isPressed = true;
+        mouse.isRightClick = e.button === 2;
+        const rect = canvas.getBoundingClientRect();
+        mouse.x = (e.clientX - rect.left) * (canvas.width / rect.width);
+        mouse.y = (e.clientY - rect.top) * (canvas.height / rect.height);
+      });
+
+      canvas.addEventListener("mouseup", () => {
+        mouse.isPressed = false;
+        mouse.isRightClick = false;
+      });
+
+      canvas.addEventListener("mousemove", (e) => {
+        const rect = canvas.getBoundingClientRect();
+        mouse.x = (e.clientX - rect.left) * (canvas.width / rect.width);
+        mouse.y = (e.clientY - rect.top) * (canvas.height / rect.height);
+      });
+
+      canvas.addEventListener("contextmenu", (e) => e.preventDefault());
+
+      nextWord(words[0], canvas);
+      animate();
+    });
+  </script>
+</body>
+</html>
